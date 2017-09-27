@@ -1,0 +1,9 @@
+//
+// File created by:  irun
+// Do not modify this file
+//
+-INCDIR
+../src
+-DEFINE
+DUT_LAB1
+-sv

@@ -1,0 +1,155 @@
+ncsim(64) 12.20-s012
+Linux 3.16.0-38-generic #52~14.04.1-Ubuntu SMP Fri May 8 09:43:57 UTC 2015 x86_64
+CPU cores: 12
+Limit information:
+======================================
+cputime			unlimited
+filesize		unlimited
+datasize		unlimited
+stacksize		unlimited
+coredumpsize	0 kbytes
+memoryuse		unlimited
+vmemoryuse		unlimited
+descriptors		1024
+memorylocked	64 kbytes
+maxproc			257163
+======================================
+(Special)Runtime environment variables:
+
+Runtime environment variables:
+ARCH=x86_64
+CADENCE_PATH=/opt/CAD
+MAIL=/var/mail/team05
+USER=team05
+SSH_CLIENT=140.112.77.41 60480 12345
+INCA_64BIT=
+LD_LIBRARY_PATH=/opt/cocotb/build/libs/x86_64:/opt/CAD/verdi/cur/share/PLI/IUS/LINUX64/:/opt/CAD/verdi/cur/etc/lib/libstdc++/LINUX64/::/opt/CAD/INCISIV/cur//lib:/opt/CAD/INCISIV/cur//lib:/opt/CAD/INCISIV/cur//lib:/usr/lib:/usr/lib:/usr/lib:/usr/lib
+SHLVL=1
+USE_PIPE=1
+HOME=/home/team05
+OLDPWD=/home/team05/Lab1
+SSH_TTY=/dev/pts/1
+SPRING_PATH=/opt/CAD
+XDG_SESSION_COOKIE=571dd7728312820a3245d4005631da4c-1505835414.757082-418292117
+USER_DIR=/opt/cocotb
+TOPLEVEL_LANG=verilog
+SYNOPSYS_PATH=/opt/CAD
+MODULE=LAB1_test
+LC_MONETARY=zh_TW.UTF-8
+GPI_EXTRA=
+IUS_BIN_DIR=/opt/CAD/INCISIV/cur/tools/bin
+MAKEFLAGS=w -- TEST=LAB1 TOPLEVEL=DE2_115 SV=1
+INCLUDES=-I/opt/cocotb/include -I/usr/include/python2.7
+TOPLEVEL=DE2_115
+VERSION=1.0
+SV=1
+LOGNAME=team05
+_=/usr/bin/make
+XDG_SESSION_ID=1276
+TERM=xterm
+PATH=/opt/CAD/INCISIV/cur/tools/bin/64bit:/opt/CAD/INCISIV/cur/tools/bin/64bit:/opt/CAD/INCISIV/cur/tools/bin/64bit:/opt/CAD/verdi/cur/bin:/opt/CAD/verdi/cur/nLint/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/opt/CAD/INCISIV/cur/tools/dfII/bin:/opt/CAD/INCISIV/cur/tools/vtools/vfault/bin:/opt/CAD/INCISIV/cur/tools/bin
+LM_LICENSE_FILE=:5280@lsntu:26585@lsntu
+XDG_RUNTIME_DIR=/run/user/1006
+OS=Linux
+LC_ADDRESS=zh_TW.UTF-8
+MAKELEVEL=2
+DISPLAY=localhost:10.0
+LC_TELEPHONE=zh_TW.UTF-8
+LANG=en_US.UTF-8
+LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lz=01;31:*.xz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.axv=01;35:*.anx=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.axa=00;36:*.oga=00;36:*.spx=00;36:*.xspf=00;36:
+MAKEOVERRIDES=${-*-command-variables-*-}
+TEST=LAB1
+BUILD_DIR=/opt/cocotb/build
+SHELL=/bin/zsh
+LC_NAME=zh_TW.UTF-8
+SHLIB_PATH=/opt/CAD/verdi/cur/share/PLI/IUS/LINUX64/:
+LD_RUN_PATH=/usr/lib:
+SIM_ROOT=/opt/cocotb
+MENTOR_PATH=/opt/CAD
+LC_MEASUREMENT=zh_TW.UTF-8
+LC_IDENTIFICATION=zh_TW.UTF-8
+LIB_DIR=/opt/cocotb/build/libs/x86_64
+PWD=/home/team05/Lab1/sim
+SSH_CONNECTION=140.112.77.41 60480 192.168.163.250 12345
+LC_NUMERIC=zh_TW.UTF-8
+LIB_OBJ_DIR=/opt/cocotb/build/obj/x86_64
+SIM_BUILD=sim_build
+PYTHONPATH=/opt/cocotb/build/libs/x86_64:/opt/cocotb:/home/team05/Lab1/sim:
+MFLAGS=-w
+LC_PAPER=zh_TW.UTF-8
+TESTCASE=
+/home/team05/Lab1/sim/sim_build/irun.lnx8664.12.20.nc/svpp.ts
+CDS_ARCH=lnx86
+NCRUNMODE=irun:./sim_build/irun.lnx8664.12.20.nc
+IRUNBATCH=FALSE
+IMPERAS_PORT_FILE=.vsp_ovp_gdb_port
+TCL_LIBRARY=/opt/CAD/INCISIV/cur/tools/inca/files/tcl/library
+Runtime command line arguments:
+argv[0]=irun
+argv[1]=+incdir+../src
+argv[2]=+define+DUT_LAB1
+argv[3]=-64
+argv[4]=-nclibdirname
+argv[5]=sim_build
+argv[6]=-plinowarn
+argv[7]=-sv
+argv[8]=-v93
+argv[9]=-loadvpi
+argv[10]=/opt/cocotb/build/libs/x86_64/libvpi
+argv[11]=+access+rwc
+argv[12]=../include/LAB1_include.sv
+100 profile - 100
+          CPU/Mem usage: 0.010 sys,  0.030 user,  112.21M sys,  0.00M vm
+101 VC callback profile - scalar:0 vector:0
+102 Tue Sep 19 23:58:31 2017
+103 pliAppInit
+104 *Verdi3* : Enable Parallel Dumping.
+105 pliAppMiscSet: New Sim Round
+106 LIBSSCORE=found /opt/CAD/verdi/cur/share/PLI/IUS/LINUX64/libsscore_ius122.so through $LD_LIBRARY_PATH setting.
+107 argv[0]: LAB1.fsdb
+108 argv[0]: 0
+109 argv[1]: (handle)0x3550168 DE2_115
+110 argv[2]: +mda
+111 Catch signal 11. Stack trace follows:
+stack trace not available112 FSDB Dumper for IUS, Release Verdi3_2013.07, Linux x86_64/64bit, 07/04/2013
+113 (C) 1996 - 2013 by Synopsys, Inc.
+114 sps_call_fsdbDumpfile at 0 : /home/team05/Lab1/src/DE2_115/DE2_115.sv(166)
+115 argv[0]: LAB1.fsdb
+116 *Verdi3* : Create FSDB file 'LAB1.fsdb'
+117 sps_call_fsdbDumpvars at 0 : /home/team05/Lab1/src/DE2_115/DE2_115.sv(167)
+118 argv[0]: 0
+119 argv[1]: (handle)0x3550168 DE2_115
+120 argv[2]: +mda
+121 *Verdi3* : Begin traversing the scope (DE2_115), layer (0).
+122 *Verdi3* : Enable +mda dumping.
+123 *Verdi3* : End of traversing.
+124 fsdbDumpvars traverse var: profile - 
+          CPU/Mem usage: 0.030 sys,  0.050 user,  258.12M sys,  0.00M vm
+                   incr: 0.000 sys,  0.000 user,  4.18M sys,  0.00M vm
+                   accu: 0.000 sys,  0.000 user,  4.18M sys,  0.00M vm
+              accu incr: 0.000 sys,  0.000 user,  4.18M sys,  0.00M vm
+
+          Count usage: 170 var,  165 idcode,  165 callback
+                 incr: 170 var,  165 idcode,  165 callback
+                 accu: 170 var,  165 idcode,  165 callback
+            accu incr: 170 var,  165 idcode,  165 callback
+125 VC callback profile - scalar:0 vector:0
+126 Tue Sep 19 23:58:31 2017
+127 fsdbDumpvars: profile - 
+          CPU/Mem usage: 0.030 sys,  0.050 user,  259.17M sys,  0.00M vm
+                   incr: 0.000 sys,  0.000 user,  1.05M sys,  0.00M vm
+                   accu: 0.000 sys,  0.000 user,  5.23M sys,  0.00M vm
+              accu incr: 0.000 sys,  0.000 user,  1.05M sys,  0.00M vm
+
+          Count usage: 170 var,  165 idcode,  165 callback
+                 incr: 0 var,  0 idcode,  0 callback
+                 accu: 170 var,  165 idcode,  165 callback
+            accu incr: 0 var,  0 idcode,  0 callback
+128 VC callback profile - scalar:116 vector:49
+129 Tue Sep 19 23:58:31 2017
+130 End of simulation at 296041
+131 VC callback profile - scalar:148252 vector:57
+132 Tue Sep 19 23:58:52 2017
+133 Parallel profile    -  Flush:2 ProduceWait:2 ConsumerWait:4 BlockUsed:3
+134 SimExit
+135 Sim process exit

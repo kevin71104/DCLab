@@ -1,0 +1,64 @@
+irun(64): 12.20-s012: (c) Copyright 1995-2013 Cadence Design Systems, Inc.
+TOOL:	irun(64)	12.20-s012: Started on Sep 19, 2017 at 23:58:31 CST
+irun
+	+incdir+../src
+	+define+DUT_LAB1
+	-64
+	-nclibdirname sim_build
+	-plinowarn
+	-sv
+	-v93
+	-loadvpi /opt/cocotb/build/libs/x86_64/libvpi
+	+access+rwc
+	../include/LAB1_include.sv
+file: ../include/LAB1_include.sv
+	module worklib.SevenHexDecoder:sv
+		errors: 0, warnings: 0
+		Caching library 'worklib' ....... Done
+	Elaborating the design hierarchy:
+	Debounce deb0(
+	            |
+ncelab: *W,CUVWSP (../src/DE2_115/DE2_115.sv,140|13): 2 output ports were not connected:
+ncelab: (../src/DE2_115/Debounce.sv,5): o_debounced
+ncelab: (../src/DE2_115/Debounce.sv,7): o_pos
+
+	Top level design units:
+		DE2_115
+	Building instance overlay tables: .................... Done
+	Generating native compiled code:
+		worklib.DE2_115:sv <0x26c9eaf6>
+			streams:   6, words:  1862
+		worklib.Debounce:sv <0x067fe2cf>
+			streams:   4, words:  2138
+		worklib.SevenHexDecoder:sv <0x205b3731>
+			streams:   1, words:  4576
+		worklib.Top:sv <0x305f444b>
+			streams:  10, words:  4165
+	Loading native compiled code:     .................... Done
+	Building instance specific data structures.
+	Design hierarchy summary:
+		                   Instances  Unique
+		Modules:                   4       4
+		Registers:                21      21
+		Scalar wires:            108       -
+		Vectored wires:           39       -
+		Always blocks:             9       9
+		Initial blocks:            1       1
+		Cont. assignments:         2      11
+		Pseudo assignments:        4       4
+		Simulation timescale:  100ps
+	Writing initial simulation snapshot: worklib.DE2_115:sv
+Loading snapshot worklib.DE2_115:sv .................... Done
+*Verdi3* Loading libsscore_ius122.so
+*Verdi3* : Enable Parallel Dumping.
+ncsim> source /opt/CAD/INCISIV/cur/tools/inca/files/ncsimrc
+ncsim> run
+FSDB Dumper for IUS, Release Verdi3_2013.07, Linux x86_64/64bit, 07/04/2013
+(C) 1996 - 2013 by Synopsys, Inc.
+*Verdi3* : Create FSDB file 'LAB1.fsdb'
+*Verdi3* : Begin traversing the scope (DE2_115), layer (0).
+*Verdi3* : Enable +mda dumping.
+*Verdi3* : End of traversing.
+Simulation complete via $finish(1) at time 29604100 PS + 0
+ncsim> exit
+TOOL:	irun(64)	12.20-s012: Exiting on Sep 19, 2017 at 23:58:52 CST  (total: 00:00:21)

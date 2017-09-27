@@ -1,0 +1,8 @@
+//
+// File created by:  irun
+// Do not modify this file
+//
+-LOADVPI
+/opt/cocotb/build/libs/x86_64/libvpi
+-ACCESS
++rwc

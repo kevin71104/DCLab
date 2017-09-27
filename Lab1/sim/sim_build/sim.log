@@ -1,0 +1,78 @@
+irun(64): 12.20-s012: (c) Copyright 1995-2013 Cadence Design Systems, Inc.
+file: ../include/LAB1_include.sv
+	module worklib.SevenHexDecoder:sv
+		errors: 0, warnings: 0
+     -.--ns INFO     cocotb.gpi                                GpiCommon.cpp:91   in gpi_print_registered_impl       VPI registered
+		Caching library 'worklib' ....... Done
+	Elaborating the design hierarchy:
+	Debounce deb0(
+	            |
+ncelab: *W,CUVWSP (../src/DE2_115/DE2_115.sv,140|13): 2 output ports were not connected:
+ncelab: (../src/DE2_115/Debounce.sv,5): o_debounced
+ncelab: (../src/DE2_115/Debounce.sv,7): o_pos
+
+	Top level design units:
+		DE2_115
+	Building instance overlay tables: .................... Done
+	Generating native compiled code:
+		worklib.DE2_115:sv <0x26c9eaf6>
+			streams:   6, words:  1862
+		worklib.Debounce:sv <0x067fe2cf>
+			streams:   4, words:  2138
+		worklib.SevenHexDecoder:sv <0x205b3731>
+			streams:   1, words:  4576
+		worklib.Top:sv <0x305f444b>
+			streams:  10, words:  4165
+	Loading native compiled code:     .................... Done
+	Building instance specific data structures.
+	Design hierarchy summary:
+		                   Instances  Unique
+		Modules:                   4       4
+		Registers:                21      21
+		Scalar wires:            108       -
+		Vectored wires:           39       -
+		Always blocks:             9       9
+		Initial blocks:            1       1
+		Cont. assignments:         2      11
+		Pseudo assignments:        4       4
+		Simulation timescale:  100ps
+	Writing initial simulation snapshot: worklib.DE2_115:sv
+Loading snapshot worklib.DE2_115:sv .................... Done
+*Verdi3* Loading libsscore_ius122.so
+*Verdi3* : Enable Parallel Dumping.
+     -.--ns INFO     cocotb.gpi                                GpiCommon.cpp:91   in gpi_print_registered_impl       VPI registered
+ncsim> source /opt/CAD/INCISIV/cur/tools/inca/files/ncsimrc
+ncsim> run
+FSDB Dumper for IUS, Release Verdi3_2013.07, Linux x86_64/64bit, 07/04/2013
+(C) 1996 - 2013 by Synopsys, Inc.
+*Verdi3* : Create FSDB file 'LAB1.fsdb'
+*Verdi3* : Begin traversing the scope (DE2_115), layer (0).
+*Verdi3* : Enable +mda dumping.
+*Verdi3* : End of traversing.
+  0.00ns INFO     cocotb.gpi                                  gpi_embed.c:248  in embed_sim_init                  Running on ncsim(64) version 12.20-s012
+  0.00ns INFO     cocotb.gpi                                  gpi_embed.c:249  in embed_sim_init                  Python interpreter initialised and cocotb loaded!
+  0.00ns INFO     cocotb                                      __init__.py:115  in _initialise_testbench           Running tests with Cocotb v1.0 from /opt/cocotb
+  0.00ns INFO     cocotb                                      __init__.py:131  in _initialise_testbench           Seeding Python random module with 1505836712
+  0.00ns INFO     cocotb.regression                         regression.py:167  in initialise                      Found test LAB1_test.LAB1_test
+  0.00ns INFO     cocotb.regression                         regression.py:287  in execute                         Running test 1/1: LAB1_test
+  0.00ns INFO     ..oroutine.LAB1_test.0x2b876b567dd0       decorators.py:191  in send                            Starting test: "LAB1_test"
+                                                                                                                  Description: None
+29604.10ns INFO     cocotb.regression                         regression.py:223  in handle_result                   Test Passed: LAB1_test
+29604.10ns INFO     cocotb.regression                         regression.py:176  in tear_down                       Passed 1 tests (0 skipped)
+29604.10ns INFO     cocotb.regression                         regression.py:341  in _log_test_summary               *****************************************************************************
+                                                                                                                    ** TEST                 PASS/FAIL  SIM TIME(NS)  REAL TIME(S)  RATIO(NS/S) **
+                                                                                                                    *****************************************************************************
+                                                                                                                    ** LAB1_test.LAB1_test    PASS        29604.10         20.51      1443.22  **
+                                                                                                                    *****************************************************************************
+                                                                                                                    
+29604.10ns INFO     cocotb.regression                         regression.py:358  in _log_sim_summary                *************************************************************************************
+                                                                                                                    **                                 ERRORS : 0                                      **
+                                                                                                                    *************************************************************************************
+                                                                                                                    **                               SIM TIME : 29604.10 NS                            **
+                                                                                                                    **                              REAL TIME : 20.56 S                                **
+                                                                                                                    **                        SIM / REAL TIME : 1440.08 NS/S                           **
+                                                                                                                    *************************************************************************************
+                                                                                                                    
+29604.10ns INFO     cocotb.regression                         regression.py:184  in tear_down                       Shutting down...
+Simulation complete via $finish(1) at time 29604100 PS + 0
+ncsim> exit

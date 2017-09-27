@@ -1,0 +1,74 @@
+ncsim(64) 12.20-s012
+Linux 3.16.0-38-generic #52~14.04.1-Ubuntu SMP Fri May 8 09:43:57 UTC 2015 x86_64
+CPU cores: 12
+Limit information:
+======================================
+cputime			unlimited
+filesize		unlimited
+datasize		unlimited
+stacksize		8192 kbytes
+coredumpsize	0 kbytes
+memoryuse		unlimited
+vmemoryuse		unlimited
+descriptors		1024
+memorylocked	64 kbytes
+maxproc			257163
+======================================
+(Special)Runtime environment variables:
+
+Runtime environment variables:
+USER=team05
+LOGNAME=team05
+HOME=/home/team05
+PATH=/opt/CAD/INCISIV/cur/tools/bin/64bit:/opt/CAD/verdi/cur/bin:/opt/CAD/verdi/cur/nLint/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/opt/CAD/INCISIV/cur/tools/dfII/bin:/opt/CAD/INCISIV/cur/tools/vtools/vfault/bin:/opt/CAD/INCISIV/cur/tools/bin
+MAIL=/var/mail/team05
+SHELL=/bin/zsh
+SSH_CLIENT=140.112.25.99 53835 12345
+SSH_CONNECTION=140.112.25.99 53835 192.168.163.250 12345
+SSH_TTY=/dev/pts/1
+TERM=xterm
+DISPLAY=localhost:10.0
+XDG_SESSION_COOKIE=571dd7728312820a3245d4005631da4c-1505973159.13289-581938268
+XDG_SESSION_ID=1336
+XDG_RUNTIME_DIR=/run/user/1006
+LANG=en_US.UTF-8
+LC_NUMERIC=zh_TW.UTF-8
+LC_MONETARY=zh_TW.UTF-8
+LC_PAPER=zh_TW.UTF-8
+LC_NAME=zh_TW.UTF-8
+LC_ADDRESS=zh_TW.UTF-8
+LC_TELEPHONE=zh_TW.UTF-8
+LC_MEASUREMENT=zh_TW.UTF-8
+LC_IDENTIFICATION=zh_TW.UTF-8
+SHLVL=1
+PWD=/home/team05/Lab1/src
+OLDPWD=/home/team05/Lab1
+LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lz=01;31:*.xz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.axv=01;35:*.anx=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.axa=00;36:*.oga=00;36:*.spx=00;36:*.xspf=00;36:
+SYNOPSYS_PATH=/opt/CAD
+CADENCE_PATH=/opt/CAD
+SPRING_PATH=/opt/CAD
+MENTOR_PATH=/opt/CAD
+LD_LIBRARY_PATH=/opt/CAD/verdi/cur/share/PLI/IUS/LINUX64/:/opt/CAD/verdi/cur/etc/lib/libstdc++/LINUX64/::/opt/CAD/INCISIV/cur//lib:/opt/CAD/INCISIV/cur//lib:/opt/CAD/INCISIV/cur//lib
+INCA_64BIT=
+LM_LICENSE_FILE=:5280@lsntu:26585@lsntu
+SHLIB_PATH=/opt/CAD/verdi/cur/share/PLI/IUS/LINUX64/:
+USE_PIPE=1
+_=/opt/CAD/INCISIV/cur/tools/bin/ncverilog
+/home/team05/Lab1/src/INCA_libs/irun.lnx8664.12.20.nc/svpp.ts
+CDS_ARCH=lnx86
+NCRUNMODE=ncverilog:./INCA_libs/irun.lnx8664.12.20.nc
+IRUNBATCH=FALSE
+IMPERAS_PORT_FILE=.vsp_ovp_gdb_port
+TCL_LIBRARY=/opt/CAD/INCISIV/cur/tools/inca/files/tcl/library
+Runtime command line arguments:
+argv[0]=ncverilog
+argv[1]=Top.sv
+65 profile - 100
+          CPU/Mem usage: 0.020 sys,  0.030 user,  85.71M sys,  0.00M vm
+66 VC callback profile - scalar:0 vector:0
+67 Thu Sep 21 15:13:32 2017
+68 pliAppInit
+69 *Verdi3* : Enable Parallel Dumping.
+70 pliAppMiscSet: New Sim Round
+71 LIBSSCORE=found /opt/CAD/verdi/cur/share/PLI/IUS/LINUX64/libsscore_ius122.so through $LD_LIBRARY_PATH setting.
+72 Sim process exit

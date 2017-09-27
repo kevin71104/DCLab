@@ -1,0 +1,9 @@
+//
+// File created by:  irun
+// Do not modify this file
+//
+-64bit
+-PLINOWARN
+-LOADVPI
+/opt/cocotb/build/libs/x86_64/libvpi
+-MESSAGES

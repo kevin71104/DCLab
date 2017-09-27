@@ -1,0 +1,15 @@
+//
+// File created by:  irun
+// Do not modify this file
+//
++incdir+../src
++define+DUT_LAB1
+-nclibdirname
+sim_build
+-plinowarn
+-sv
+-v93
+-loadvpi
+/opt/cocotb/build/libs/x86_64/libvpi
++access+rwc
+../include/LAB1_include.sv

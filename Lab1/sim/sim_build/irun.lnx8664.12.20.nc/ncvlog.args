@@ -1,0 +1,24 @@
+//
+// File created by:  irun
+// Do not modify this file
+//
+-XLMODE
+./sim_build/irun.lnx8664.12.20.nc
+-RUNMODE
+-INCDIR
+../src
+-DEFINE
+DUT_LAB1
+-NCLIBDIRNAME
+sim_build
+-sv
+../include/LAB1_include.sv
+-CDSLIB
+./sim_build/irun.lnx8664.12.20.nc/cdsrun.lib
+-HDLVAR
+./sim_build/irun.lnx8664.12.20.nc/hdlrun.var
+-MESSAGES
+-UPDATE
+-XLLIBSTORE
+./sim_build/irun.lnx8664.12.20.nc/xllibs
+-ALLOWUNBOUND

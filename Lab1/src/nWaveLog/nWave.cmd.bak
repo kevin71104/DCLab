@@ -1,0 +1,404 @@
+wvResizeWindow -win $_nWave1 0 23 1366 705
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvSetPosition -win $_nWave1 {("G1" 0)}
+wvOpenFile -win $_nWave1 {/home/team05/Lab1/src/Top.vcd.fsdb}
+wvGetSignalOpen -win $_nWave1
+wvGetSignalSetScope -win $_nWave1 "/tb_Top"
+wvSetPosition -win $_nWave1 {("G1" 4)}
+wvSetPosition -win $_nWave1 {("G1" 4)}
+wvAddSignal -win $_nWave1 -clear
+wvAddSignal -win $_nWave1 -group {"G1" \
+{/tb_Top/out\[3:0\]} \
+{/tb_Top/clk} \
+{/tb_Top/rst} \
+{/tb_Top/start} \
+}
+wvAddSignal -win $_nWave1 -group {"G2" \
+}
+wvSelectSignal -win $_nWave1 {( "G1" 2 3 4 )} 
+wvSetPosition -win $_nWave1 {("G1" 4)}
+wvSetPosition -win $_nWave1 {("G1" 4)}
+wvSetPosition -win $_nWave1 {("G1" 4)}
+wvAddSignal -win $_nWave1 -clear
+wvAddSignal -win $_nWave1 -group {"G1" \
+{/tb_Top/out\[3:0\]} \
+{/tb_Top/clk} \
+{/tb_Top/rst} \
+{/tb_Top/start} \
+}
+wvAddSignal -win $_nWave1 -group {"G2" \
+}
+wvSelectSignal -win $_nWave1 {( "G1" 2 3 4 )} 
+wvSetPosition -win $_nWave1 {("G1" 4)}
+wvGetSignalClose -win $_nWave1
+wvSelectSignal -win $_nWave1 {( "G1" 1 )} 
+wvMoveSelected -win $_nWave1
+wvSetPosition -win $_nWave1 {("G1" 4)}
+wvSetCursor -win $_nWave1 12932.297872 -snap {("G1" 1)}
+wvZoomIn -win $_nWave1
+wvZoomIn -win $_nWave1
+wvZoomIn -win $_nWave1
+wvGetSignalOpen -win $_nWave1
+wvGetSignalSetScope -win $_nWave1 "/tb_Top"
+wvGetSignalSetScope -win $_nWave1 "/tb_Top"
+wvGetSignalSetScope -win $_nWave1 "/tb_Top/top"
+wvSetPosition -win $_nWave1 {("G1" 9)}
+wvSetPosition -win $_nWave1 {("G1" 9)}
+wvAddSignal -win $_nWave1 -clear
+wvAddSignal -win $_nWave1 -group {"G1" \
+{/tb_Top/clk} \
+{/tb_Top/rst} \
+{/tb_Top/start} \
+{/tb_Top/out\[3:0\]} \
+{/tb_Top/top/CNT_SIZE\[31:0\]} \
+{/tb_Top/top/DELAY} \
+{/tb_Top/top/FREQ_HZ} \
+{/tb_Top/top/curr_state} \
+{/tb_Top/top/i_start} \
+}
+wvAddSignal -win $_nWave1 -group {"G2" \
+}
+wvSelectSignal -win $_nWave1 {( "G1" 5 6 7 8 9 )} 
+wvSetPosition -win $_nWave1 {("G1" 9)}
+wvGetSignalClose -win $_nWave1
+wvResizeWindow -win $_nWave1 0 23 1366 705
+wvSelectSignal -win $_nWave1 {( "G1" 7 )} 
+wvSetRadix -win $_nWave1 -format UDec {("G1" 7)}
+wvGetSignalOpen -win $_nWave1
+wvGetSignalSetScope -win $_nWave1 "/tb_Top"
+wvGetSignalSetScope -win $_nWave1 "/tb_Top/top"
+wvSetPosition -win $_nWave1 {("G1" 10)}
+wvSetPosition -win $_nWave1 {("G1" 10)}
+wvAddSignal -win $_nWave1 -clear
+wvAddSignal -win $_nWave1 -group {"G1" \
+{/tb_Top/clk} \
+{/tb_Top/rst} \
+{/tb_Top/start} \
+{/tb_Top/out\[3:0\]} \
+{/tb_Top/top/CNT_SIZE\[31:0\]} \
+{/tb_Top/top/DELAY} \
+{/tb_Top/top/FREQ_HZ} \
+{/tb_Top/top/curr_state} \
+{/tb_Top/top/i_start} \
+{/tb_Top/top/NUM} \
+}
+wvAddSignal -win $_nWave1 -group {"G2" \
+}
+wvSelectSignal -win $_nWave1 {( "G1" 10 )} 
+wvSetPosition -win $_nWave1 {("G1" 10)}
+wvGetSignalClose -win $_nWave1
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
+wvSelectSignal -win $_nWave1 {( "G1" 5 )} 
+wvSetRadix -win $_nWave1 -format UDec {("G1" 5)}
+wvGetSignalOpen -win $_nWave1
+wvSetPosition -win $_nWave1 {("G1" 13)}
+wvSetPosition -win $_nWave1 {("G1" 13)}
+wvAddSignal -win $_nWave1 -clear
+wvAddSignal -win $_nWave1 -group {"G1" \
+{/tb_Top/clk} \
+{/tb_Top/rst} \
+{/tb_Top/start} \
+{/tb_Top/out\[3:0\]} \
+{/tb_Top/top/CNT_SIZE\[31:0\]} \
+{/tb_Top/top/DELAY} \
+{/tb_Top/top/FREQ_HZ} \
+{/tb_Top/top/curr_state} \
+{/tb_Top/top/i_start} \
+{/tb_Top/top/NUM} \
+{/tb_Top/top/curr_cnt\[28:0\]} \
+{/tb_Top/top/curr_num\[2:0\]} \
+{/tb_Top/top/curr_random\[3:0\]} \
+}
+wvAddSignal -win $_nWave1 -group {"G2" \
+}
+wvSelectSignal -win $_nWave1 {( "G1" 11 12 13 )} 
+wvSetPosition -win $_nWave1 {("G1" 13)}
+wvGetSignalClose -win $_nWave1
+wvSetCursor -win $_nWave1 21879.659976 -snap {("G1" 13)}
+wvSearchNext -win $_nWave1
+wvSearchNext -win $_nWave1
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
+wvUnknownSaveResult -win $_nWave1 -clear
+wvSelectSignal -win $_nWave1 {( "G1" 12 )} 
+wvSetRadix -win $_nWave1 -format UDec {("G1" 12)}
+wvResizeWindow -win $_nWave1 0 23 1366 705
+wvCut -win $_nWave1
+wvSetPosition -win $_nWave1 {("G2" 0)}
+wvGetSignalOpen -win $_nWave1
+wvSetPosition -win $_nWave1 {("G2" 1)}
+wvSetPosition -win $_nWave1 {("G2" 1)}
+wvAddSignal -win $_nWave1 -clear
+wvAddSignal -win $_nWave1 -group {"G1" \
+{/tb_Top/clk} \
+{/tb_Top/rst} \
+{/tb_Top/start} \
+{/tb_Top/out\[3:0\]} \
+{/tb_Top/top/CNT_SIZE\[31:0\]} \
+{/tb_Top/top/DELAY} \
+{/tb_Top/top/FREQ_HZ} \
+{/tb_Top/top/curr_state} \
+{/tb_Top/top/i_start} \
+{/tb_Top/top/NUM} \
+{/tb_Top/top/curr_num\[2:0\]} \
+}
+wvAddSignal -win $_nWave1 -group {"G2" \
+{/tb_Top/top/curr_cnt\[3:0\]} \
+}
+wvAddSignal -win $_nWave1 -group {"G3" \
+}
+wvSelectSignal -win $_nWave1 {( "G2" 1 )} 
+wvSetPosition -win $_nWave1 {("G2" 1)}
+wvGetSignalClose -win $_nWave1
+wvSelectSignal -win $_nWave1 {( "G1" 9 )} 
+wvCut -win $_nWave1
+wvSetPosition -win $_nWave1 {("G3" 0)}
+wvSetPosition -win $_nWave1 {("G2" 1)}
+wvSelectSignal -win $_nWave1 {( "G1" 5 )} 
+wvSelectSignal -win $_nWave1 {( "G1" 5 )} 
+wvCut -win $_nWave1
+wvSetPosition -win $_nWave1 {("G3" 0)}
+wvSetPosition -win $_nWave1 {("G2" 1)}
+wvSelectSignal -win $_nWave1 {( "G1" 6 )} 
+wvCut -win $_nWave1
+wvSetPosition -win $_nWave1 {("G3" 0)}
+wvSetPosition -win $_nWave1 {("G2" 1)}
+wvSelectSignal -win $_nWave1 {( "G1" 5 )} 
+wvCut -win $_nWave1
+wvSetPosition -win $_nWave1 {("G3" 0)}
+wvSetPosition -win $_nWave1 {("G2" 1)}
+wvSelectSignal -win $_nWave1 {( "G1" 6 )} 
+wvCut -win $_nWave1
+wvSetPosition -win $_nWave1 {("G3" 0)}
+wvSetPosition -win $_nWave1 {("G2" 1)}
+wvSelectSignal -win $_nWave1 {( "G1" 4 )} 
+wvSetPosition -win $_nWave1 {("G2" 0)}
+wvCollapseGroup -win $_nWave1 "G2"
+wvSelectSignal -win $_nWave1 {( "G1" 4 )} 
+wvSelectGroup -win $_nWave1 {G2}
+wvSelectGroup -win $_nWave1 {G2}
+wvSelectGroup -win $_nWave1 {G2}
+wvSelectSignal -win $_nWave1 {( "G1" 6 )} {( "G2" 1 )} 
+wvSelectSignal -win $_nWave1 {( "G1" 4 )} 
+wvMoveSelected -win $_nWave1
+wvSetPosition -win $_nWave1 {("G2" 1)}
+wvSelectSignal -win $_nWave1 {( "G1" 5 )} 
+wvMoveSelected -win $_nWave1
+wvSetPosition -win $_nWave1 {("G2" 2)}
+wvSelectSignal -win $_nWave1 {( "G2" 1 )} 
+wvSetRadix -win $_nWave1 -format UDec {("G2" 1)}
+wvSetCursor -win $_nWave1 27277.171839 -snap {("G3" 0)}
+wvSetCursor -win $_nWave1 14447.197733
+wvSearchNext -win $_nWave1
+wvSearchNext -win $_nWave1
+wvSelectSignal -win $_nWave1 {( "G2" 3 )} 
+wvSetRadix -win $_nWave1 -format UDec {("G2" 3)}
+wvSetCursor -win $_nWave1 65551.464341 -snap {("G3" 0)}
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
+wvSetCursor -win $_nWave1 14986.272275 -snap {("G2" 0)}
+wvSetCursor -win $_nWave1 11859.639930 -snap {("G3" 0)}
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
+wvSetCursor -win $_nWave1 53260.564777 -snap {("G3" 0)}
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
+wvSetCursor -win $_nWave1 52829.305143 -snap {("G3" 0)}
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
+wvGetSignalOpen -win $_nWave1
+wvSetPosition -win $_nWave1 {("G2" 3)}
+wvSetPosition -win $_nWave1 {("G2" 3)}
+wvAddSignal -win $_nWave1 -clear
+wvAddSignal -win $_nWave1 -group {"G1" \
+{/tb_Top/clk} \
+{/tb_Top/rst} \
+{/tb_Top/start} \
+{/tb_Top/top/curr_state} \
+}
+wvAddSignal -win $_nWave1 -group {"G2" \
+{/tb_Top/out\[3:0\]} \
+{/tb_Top/top/curr_num\[2:0\]} \
+{/tb_Top/top/done} \
+{/tb_Top/top/curr_cnt\[3:0\]} \
+}
+wvAddSignal -win $_nWave1 -group {"G3" \
+}
+wvSelectSignal -win $_nWave1 {( "G2" 3 )} 
+wvSetPosition -win $_nWave1 {("G2" 3)}
+wvGetSignalClose -win $_nWave1
+wvSetCursor -win $_nWave1 56818.456756 -snap {("G3" 0)}
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
+wvSetCursor -win $_nWave1 33853.881255 -snap {("G3" 0)}
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
+wvSetCursor -win $_nWave1 52505.860417 -snap {("G3" 0)}
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
+wvGetSignalOpen -win $_nWave1
+wvSetPosition -win $_nWave1 {("G2" 4)}
+wvSetPosition -win $_nWave1 {("G2" 4)}
+wvAddSignal -win $_nWave1 -clear
+wvAddSignal -win $_nWave1 -group {"G1" \
+{/tb_Top/clk} \
+{/tb_Top/rst} \
+{/tb_Top/start} \
+{/tb_Top/top/curr_state} \
+}
+wvAddSignal -win $_nWave1 -group {"G2" \
+{/tb_Top/out\[3:0\]} \
+{/tb_Top/top/curr_num\[2:0\]} \
+{/tb_Top/top/done} \
+{/tb_Top/top/CNT_SIZE\[31:0\]} \
+{/tb_Top/top/curr_cnt\[3:0\]} \
+}
+wvAddSignal -win $_nWave1 -group {"G3" \
+}
+wvSelectSignal -win $_nWave1 {( "G2" 4 )} 
+wvSetPosition -win $_nWave1 {("G2" 4)}
+wvGetSignalClose -win $_nWave1
+wvSetRadix -win $_nWave1 -format UDec {("G2" 4)}
+wvSetCursor -win $_nWave1 17250.385353 -snap {("G3" 0)}
+wvSetCursor -win $_nWave1 51427.711333 -snap {("G3" 0)}
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
+wvGetSignalOpen -win $_nWave1
+wvSelectSignal -win $_nWave1 {( "G2" 5 )} 
+wvCut -win $_nWave1
+wvSetPosition -win $_nWave1 {("G2" 4)}
+wvSelectSignal -win $_nWave1 {( "G2" 4 )} 
+wvCut -win $_nWave1
+wvSetPosition -win $_nWave1 {("G3" 0)}
+wvSetPosition -win $_nWave1 {("G2" 3)}
+wvGetSignalOpen -win $_nWave1
+wvSetPosition -win $_nWave1 {("G2" 4)}
+wvSetPosition -win $_nWave1 {("G2" 4)}
+wvAddSignal -win $_nWave1 -clear
+wvAddSignal -win $_nWave1 -group {"G1" \
+{/tb_Top/clk} \
+{/tb_Top/rst} \
+{/tb_Top/start} \
+{/tb_Top/top/curr_state} \
+}
+wvAddSignal -win $_nWave1 -group {"G2" \
+{/tb_Top/out\[3:0\]} \
+{/tb_Top/top/curr_num\[2:0\]} \
+{/tb_Top/top/done} \
+{/tb_Top/top/curr_cnt\[4:0\]} \
+}
+wvAddSignal -win $_nWave1 -group {"G3" \
+}
+wvSelectSignal -win $_nWave1 {( "G2" 4 )} 
+wvSetPosition -win $_nWave1 {("G2" 4)}
+wvGetSignalClose -win $_nWave1
+wvSetCursor -win $_nWave1 50780.821882 -snap {("G3" 0)}
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
+wvSelectSignal -win $_nWave1 {( "G2" 4 )} 
+wvSetRadix -win $_nWave1 -format UDec {("G2" 4)}
+wvGetSignalOpen -win $_nWave1
+wvSetPosition -win $_nWave1 {("G2" 5)}
+wvSetPosition -win $_nWave1 {("G2" 5)}
+wvAddSignal -win $_nWave1 -clear
+wvAddSignal -win $_nWave1 -group {"G1" \
+{/tb_Top/clk} \
+{/tb_Top/rst} \
+{/tb_Top/start} \
+{/tb_Top/top/curr_state} \
+}
+wvAddSignal -win $_nWave1 -group {"G2" \
+{/tb_Top/out\[3:0\]} \
+{/tb_Top/top/curr_num\[2:0\]} \
+{/tb_Top/top/done} \
+{/tb_Top/top/curr_cnt\[4:0\]} \
+{/tb_Top/top/NUM} \
+}
+wvAddSignal -win $_nWave1 -group {"G3" \
+}
+wvSelectSignal -win $_nWave1 {( "G2" 5 )} 
+wvSetPosition -win $_nWave1 {("G2" 5)}
+wvGetSignalClose -win $_nWave1
+wvSetCursor -win $_nWave1 42155.629206 -snap {("G3" 0)}
+wvGetSignalOpen -win $_nWave1
+wvGetSignalSetScope -win $_nWave1 "/tb_Top"
+wvGetSignalSetScope -win $_nWave1 "/tb_Top/top"
+wvGetSignalSetScope -win $_nWave1 "/tb_Top/top"
+wvSetPosition -win $_nWave1 {("G2" 6)}
+wvSetPosition -win $_nWave1 {("G2" 6)}
+wvAddSignal -win $_nWave1 -clear
+wvAddSignal -win $_nWave1 -group {"G1" \
+{/tb_Top/clk} \
+{/tb_Top/rst} \
+{/tb_Top/start} \
+{/tb_Top/top/curr_state} \
+}
+wvAddSignal -win $_nWave1 -group {"G2" \
+{/tb_Top/out\[3:0\]} \
+{/tb_Top/top/curr_num\[2:0\]} \
+{/tb_Top/top/done} \
+{/tb_Top/top/curr_cnt\[4:0\]} \
+{/tb_Top/top/NUM} \
+{/tb_Top/top/curr_num\[3:0\]} \
+}
+wvAddSignal -win $_nWave1 -group {"G3" \
+}
+wvSelectSignal -win $_nWave1 {( "G2" 6 )} 
+wvSetPosition -win $_nWave1 {("G2" 6)}
+wvGetSignalClose -win $_nWave1
+wvSelectSignal -win $_nWave1 {( "G2" 2 )} 
+wvCut -win $_nWave1
+wvSetPosition -win $_nWave1 {("G3" 0)}
+wvSetPosition -win $_nWave1 {("G2" 5)}
+wvSetCursor -win $_nWave1 48624.523713 -snap {("G3" 0)}
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
+wvSetCursor -win $_nWave1 66629.613425 -snap {("G3" 0)}
+wvDisplayGridCount -win $_nWave1 -off
+wvGetSignalClose -win $_nWave1
+wvConvertFile -win $_nWave1 -o "/home/team05/Lab1/src/Top.vcd.fsdb" \
+           "/home/team05/Lab1/src/Top.vcd"
+wvReloadFile -win $_nWave1
