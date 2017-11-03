@@ -17,7 +17,8 @@ module Rsa256Core(
 	logic         src_rdy_cur, src_rdy_nxt, result_val_cur, result_val_nxt;
 	logic [255:0] ans_cur, ans_nxt;
 
-	// I/O of sub-modules (block sub-module input)
+	// I/O of sub-modules
+	// In the sub-module, both input and output are of reg type
 	logic         mp_start_cur, mp_start_nxt;
 	logic         mp_finish;
 	logic [255:0] mp_result, t_cur, t_nxt;
@@ -190,8 +191,10 @@ module ModuloProduct(
 );
 
 //==== logic declaration =======================================================
-	logic                   finish_cur, finish_nxt;  // block output
-	logic [256:0]           m_cur, m_nxt;	         // block output
+	logic                   start_cur, start_nxt;        // block input
+	logic [255:0]           a_cur, a_nxt, n_cur, n_nxt;  // block input
+	logic                   finish_cur, finish_nxt;      // block output
+	logic [256:0]           m_cur, m_nxt;	             // block output
 	enum  {IDLE, RUN, DONE} state_cur, state_nxt;
 	logic [  8:0]           counter_cur, counter_nxt;
 	logic [256:0]           t_cur, t_nxt;
@@ -206,28 +209,36 @@ module ModuloProduct(
 		counter_nxt = counter_cur;
 		t_nxt       = t_cur;
 		m_nxt       = m_cur;
+		a_nxt       = a_cur;
+		n_nxt       = n_cur;
+		start_nxt   = start_cur;
 		// FSM
 		case(state_r)
 			IDLE: begin
-				if(i_start == 1) begin
+				start_nxt = i_start;
+				if(start_cur == 1) begin
 					state_nxt = RUN;
+					a_nxt = i_a;
+					n_nxt = i_n;
+					start_nxt = 0;
 					m_nxt = 0;       // Init
 					t_nxt = i_b;     // Init
 					counter_nxt = 0; // Init
 				end
 			end
 			RUN: begin
-				if(i_a[counter_cur] == 1) begin
-					if(m_cur + t_cur >= i_n)begin
-						m_nxt = m_cur + t_cur - i_n;
+				a_nxt = a_cur >> 1;
+				if(a_cur[0] == 1) begin
+					if(m_cur + t_cur >= n_cur)begin
+						m_nxt = m_cur + t_cur - n_cur;
 					end
 					else begin
 						m_nxt = m_cur + t_cur;
 					end
 				end
 
-				if((t_cur << 1) >= i_n)begin
-					t_nxt = (t_cur << 1) - i_n;
+				if((t_cur << 1) >= n_cur)begin
+					t_nxt = (t_cur << 1) - n_cur;
 				end
 				else begin
 					t_nxt = t_cur << 1;
@@ -256,6 +267,9 @@ module ModuloProduct(
             state_cur   <= IDLE;
             counter_cur <= 0;
 			t_cur       <= 0;
+			a_cur       <= 0;
+			n_cur       <= 0;
+			start_cur   <= 0;
         end
 		else begin
 			finish_cur  <= finish_nxt;
@@ -263,6 +277,9 @@ module ModuloProduct(
             state_cur   <= state_nxt;
             counter_cur <= counter_nxt;
 			t_cur       <= t_nxt;
+			a_cur       <= a_nxt;
+			n_cur       <= n_nxt;
+			start_cur   <= start_nxt;
         end
     end
 
@@ -280,11 +297,13 @@ module Montgometry(
 );
 
 //==== logic declaration =======================================================
-	logic                   finish_cur, finish_nxt;  // block output
-	logic [255:0]           m_cur, m_nxt;	         // block output
+	logic                   start_cur, start_nxt;        // block input
+	logic [255:0]           a_cur, a_nxt, b_cur, b_nxt;  // block input
+	logic [255:0]           n_cur, n_nxt;                // block input
+	logic                   finish_cur, finish_nxt;      // block output
+	logic [255:0]           m_cur, m_nxt;	             // block output
 	enum  {IDLE, RUN, DONE} state_cur, state_nxt;
 	logic [  7:0]           counter_cur, counter_nxt;
-	logic [255:0]           a_cur, a_nxt, b_cur, b_nxt, n_cur, n_nxt;
 	logic [255:0]           m_tmp, m_EvenOdd, m_half;
 //==== Combinational Part ======================================================
 	assign o_finish = finish_cur;
@@ -299,17 +318,19 @@ module Montgometry(
 		a_nxt = a_cur;
 		b_nxt = b_cur;
 		n_nxt = n_cur;
+		start_nxt = start_cur;
 		state_nxt = state_cur;
 		counter_nxt = counter_cur;
-
 		// FSM
 		case(state_r)
 			IDLE: begin
-				if(i_start == 1) begin
+				start_nxt = i_start;
+				if(start_cur == 1) begin
 					state_nxt = RUN;
 					a_nxt = i_a;
 					b_nxt = i_b;
 					n_nxt = i_n;
+					start_nxt = 0;
 					m_nxt = 0;       // Init
 					counter_nxt = 0; // Init
 				end
@@ -343,6 +364,7 @@ module Montgometry(
 			a_cur       <= 0;
 			b_cur       <= 0;
 			n_cur       <= 0;
+			start_cur   <= 0;
             state_cur   <= IDLE;
             counter_cur <= 0;
         end
@@ -352,6 +374,7 @@ module Montgometry(
 			a_cur       <= a_nxt;
 			b_cur       <= b_nxt;
 			n_cur       <= n_nxt;
+			start_cur   <= start_nxt;
             state_cur   <= state_nxt;
             counter_cur <= counter_nxt;
         end
