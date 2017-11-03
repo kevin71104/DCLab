@@ -19,14 +19,11 @@ module Rsa256Core(
 
 	// I/O of sub-modules
 	// In the sub-module, both input and output are of reg type
-	logic         mp_start_cur, mp_start_nxt;
-	logic         mp_finish;
-	logic [255:0] mp_result, t_cur, t_nxt;
+	logic         mp_start, mp_finish;
+	logic [255:0] mp_result;
 
-	logic         mont_start_c_cur, mont_start_c_nxt;
-	logic         mont_start_s_cur, mont_start_s_nxt;
-	logic [255:0] mont_a_c_cur, mont_a_c_nxt, mont_a_s_cur, mont_a_s_nxt;
-	logic [255:0] mont_b_c_cur, mont_b_c_nxt;
+	logic         mont_start_c, mont_start_s;
+	logic [255:0] mont_a_c, mont_a_s,  mont_b_c;
 	logic         mont_finish_c, mont_finish_s;
 	logic [255:0] mont_result_c, mont_result_s;
 
@@ -39,7 +36,7 @@ module Rsa256Core(
 	ModuloProduct i_mp(
 	    .i_clk(i_clk),
 	    .i_rst(i_rst),
-	    .i_start(mp_start_cur),
+	    .i_start(mp_start),
 	    .i_n({1'b0,n_cur}),        // since b = 2^256, a,b,n become 257 bits
 	    .i_a({1'b0,a_cur}),
 	    .i_b({1'b1,{256{1'b0}}}),  // b = 2^256
@@ -49,47 +46,50 @@ module Rsa256Core(
 	Montgometry i_mg_cross(
 		.i_clk(i_clk),
 	    .i_rst(i_rst),
-	    .i_start(mont_start_c_cur),
+	    .i_start(mont_start_c),
 	    .i_n(n_cur),
-	    .i_a(mont_a_c_cur),
-	    .i_b(mont_b_c_cur),
+	    .i_a(mont_a_c),
+	    .i_b(mont_b_c),
 	    .o_result(mont_result_c),
 	    .o_finish(mont_finish_c)
 	);
 	Montgometry i_mg_self(
 		.i_clk(i_clk),
 	    .i_rst(i_rst),
-	    .i_start(mont_start_s_cur),
+	    .i_start(mont_start_s),
 	    .i_n(n_cur),
-	    .i_a(mont_a_s_cur),
-	    .i_b(mont_a_s_cur),
+	    .i_a(mont_a_s),
+	    .i_b(mont_a_s),
 	    .o_result(mont_result_s),
 	    .o_finish(mont_finish_s)
 	);
 
 //==== Combinational Part ======================================================
-	assign o_a_pow_e = ans_r;
+	assign o_a_pow_e = ans_r
 	always_comb begin
-		// Default Value
+	// Default Value
+		// Input
 		a_nxt = a_cur;
 		e_nxt = e_cur;
 		n_nxt = n_cur;
-		src_val_nxt = src_val_cur;
-		result_rdy_nxt = result_rdy_cur;
-		src_rdy_nxt = src_rdy_cur;
-		result_val_nxt = result_val_cur;
+		src_val_nxt = src_val;
+		result_rdy_nxt = result_rdy;
+		// Output
+		src_rdy_nxt = 0;
+		result_val_nxt = 0;
 		ans_nxt = ans_cur;
-		mp_start_cur <= mp_start_nxt;
-		t_nxt = t_cur;
-		mont_start_c_nxt = mont_start_c_cur;
-		mont_start_s_nxt = mont_start_s_cur;
-		mont_a_c_nxt = mont_a_c_cur;
-		mont_a_s_nxt = mont_a_s_cur;
-		mont_b_c_nxt = mont_b_c_cur;
+		// Others
 		state_nxt = state_cur;
 		counter_nxt = counter_cur;
 		status_nxt = status_cur;
-		// FSM
+		// Sub-modules
+		mp_start = 0;
+		mont_start_s = 0;
+		mont_start_c = 0;
+		mont_a_s = 0;
+		mont_a_c = 0;
+		mont_b_c = 0;
+	// FSM
 		case(state_r)
 			IDLE: begin
 				if(src_val_cur == 1)begin
@@ -98,38 +98,61 @@ module Rsa256Core(
 					e_nxt = i_e;
 					n_nxt = i_n;
 					src_rdy_nxt = 1;
-					mp_start_nxt = 1;
-				end
-				else begin
-					state_nxt = IDLE;
-					src_val_nxt = src_val;
+					mp_start = 1;
 				end
 			end
 			MP: begin
-				mp_start_nxt = 0;
 				if(mp_finish == 1) begin
 					state_nxt = MONT;
-					t_nxt = mp_result;
+					counter_nxt = 0;
+					e_nxt = e_cur >> 1;
 					if(e_cur[0] == 1)begin
-						mont_start_c_nxt = 1;
-						mont_a_c_nxt = 1; // m = 1
-						mont_b_c_nxt = mp_result;
+						mont_start_c = 1;
 						status_nxt = 2'b00;
 					end
 					else begin
 						status_nxt = 2'b01;
 					end
-					mont_start_s_nxt = 1;
-					mont_a_s_nxt = mp_result;
+					mont_a_c = 1;
+					mont_b_c = mp_result;
+					mont_start_s = 1;
+					mont_a_s = mp_result;
 				end
 			end
 			MONT: begin
-				mont_start_s_nxt = 0;
-				mont_start_c_nxt = 0;
 				if(mont_finish_c)begin
-
+					status_nxt[0] = 1;
+					ans_nxt = mont_result_c;
 				end
 				if(mont_finish_s)begin
+					status_nxt[1] = 1;
+				end
+				if(status_cur == 2'b11)begin
+					if(counter_cur == 255)begin
+						result_val_nxt = 1;
+						state_nxt = CHECK;
+					end
+					else begin
+						e_nxt = e_cur >> 1;
+						if(e_cur[0] == 1)begin
+							mont_start_c = 1;
+							status_nxt = 2'b00;
+						end
+						else begin
+							status_nxt = 2'b01;
+						end
+						mont_a_c = mont_result_c;
+						mont_b_c = mont_result_s;
+						mont_start_s = 1;
+						mont_a_s = mont_result_s;
+						counter_nxt = counter_cur + 1;
+					end
+				end
+			end
+			CHECK: begin
+				if(result_rdy_cur == 1)begin
+					state_nxt = IDLE;
+					result_val_nxt = 0;
 				end
 			end
 		endcase
@@ -145,13 +168,6 @@ module Rsa256Core(
 			src_rdy_cur <= 0;
 			result_val_cur <= 0;
 			ans_cur <= 0;
-			mp_start_cur <= 0;
-			t_cur <= 0;
-			mont_start_c_cur <= 0;
-			mont_start_s_cur <= 0;
-			mont_a_c_cur <= 0;
-			mont_a_s_cur <= 0;
-			mont_b_c_cur <= 0;
 			state_cur <= IDLE;
 			counter_cur <= 0;
 			status_cur <= 0;
@@ -165,13 +181,6 @@ module Rsa256Core(
 			src_rdy_cur <= src_rdy_nxt;
 			result_val_cur <= result_val_nxt;
 			ans_cur <= ans_nxt;
-			mp_start_cur <= mp_start_nxt;
-			t_cur <= t_nxt;
-			mont_start_c_cur <= mont_start_c_nxt;
-			mont_start_s_cur <= mont_start_s_nxt;
-			mont_a_c_cur <= mont_a_c_nxt;
-			mont_a_s_cur <= mont_a_s_nxt;
-			mont_b_c_cur <= mont_b_c_nxt;
 			state_cur <= state_nxt;
 			counter_cur <= counter_nxt;
 			status_cur <= status_nxt;
