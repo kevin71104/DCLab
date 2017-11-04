@@ -38,8 +38,8 @@ module Rsa256Core(
 	    .i_rst(i_rst),
 	    .i_start(mp_start),
 	    .i_n({1'b0,n_cur}),        // since b = 2^256, a,b,n become 257 bits
-	    .i_a({1'b0,a_cur}),
-	    .i_b({1'b1,{256{1'b0}}}),  // b = 2^256
+	    .i_a({1'b1,{256{1'b0}}}),
+	    .i_b({1'b0,a_cur}),  // b = 2^256
 	    .o_result(mp_result),
 	    .o_finish(mp_finish)
 	);
@@ -66,6 +66,8 @@ module Rsa256Core(
 
 //==== Combinational Part ======================================================
 	assign o_a_pow_e = ans_cur;
+	assign src_rdy = src_rdy_cur;
+	assign result_val = result_val_cur;
 	always_comb begin
 	// Default Value
 		// Input
@@ -201,7 +203,7 @@ module ModuloProduct(
 
 //==== logic declaration =======================================================
 	logic                   start_cur, start_nxt;        // block input
-	logic [255:0]           a_cur, a_nxt, n_cur, n_nxt;  // block input
+	logic [256:0]           a_cur, a_nxt, n_cur, n_nxt;  // block input
 	logic                   finish_cur, finish_nxt;      // block output
 	logic [256:0]           m_cur, m_nxt;	             // block output
 	enum  {IDLE, RUN, DONE} state_cur, state_nxt;
@@ -306,7 +308,7 @@ module Montgometry(
 );
 
 //==== logic declaration =======================================================
-	logic                   start_cur, start_nxt;        // block input
+	//logic                   start_cur, start_nxt;        // block input
 	logic [255:0]           a_cur, a_nxt, b_cur, b_nxt;  // block input
 	logic [255:0]           n_cur, n_nxt;                // block input
 	logic                   finish_cur, finish_nxt;      // block output
@@ -318,7 +320,7 @@ module Montgometry(
 	assign o_finish = finish_cur;
 	assign o_result = m_cur;
 	assign m_tmp = a_cur[0] ? m_cur + b_cur : m_cur;
-	assign m_EvenOdd = m_tmp[0] ? m_EvenOdd + n_cur : m_EvenOdd;
+	assign m_EvenOdd = m_tmp[0] ? m_tmp + n_cur : m_tmp;
 	assign m_half = m_EvenOdd >> 1;
 	always_comb begin
 		// Default Value
@@ -327,19 +329,20 @@ module Montgometry(
 		a_nxt = a_cur;
 		b_nxt = b_cur;
 		n_nxt = n_cur;
-		start_nxt = start_cur;
+		//start_nxt = start_cur;
 		state_nxt = state_cur;
 		counter_nxt = counter_cur;
 		// FSM
 		case(state_cur)
 			IDLE: begin
-				start_nxt = i_start;
-				if(start_cur == 1) begin
+				//start_nxt = i_start;
+				//if(start_cur == 1) begin
+				if(i_start == 1) begin
 					state_nxt = RUN;
 					a_nxt = i_a;
 					b_nxt = i_b;
 					n_nxt = i_n;
-					start_nxt = 0;
+					//start_nxt = 0;
 					m_nxt = 0;       // Init
 					counter_nxt = 0; // Init
 				end
@@ -373,7 +376,7 @@ module Montgometry(
 			a_cur       <= 0;
 			b_cur       <= 0;
 			n_cur       <= 0;
-			start_cur   <= 0;
+			//start_cur   <= 0;
             state_cur   <= IDLE;
             counter_cur <= 0;
         end
@@ -383,7 +386,7 @@ module Montgometry(
 			a_cur       <= a_nxt;
 			b_cur       <= b_nxt;
 			n_cur       <= n_nxt;
-			start_cur   <= start_nxt;
+			//start_cur   <= start_nxt;
             state_cur   <= state_nxt;
             counter_cur <= counter_nxt;
         end

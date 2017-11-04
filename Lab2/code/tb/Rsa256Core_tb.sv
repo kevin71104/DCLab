@@ -3,7 +3,7 @@
 `include   "../src/Rsa256Core.sv"
 `define CYCLE  4.0
 `define H_CYCLE (`CYCLE/2)
-`define IN_FILE         "./testdata/get_sa_v3/data_1/get_sa_in_input.dat"
+//`define IN_FILE         "./testdata/get_sa_v3/data_1/get_sa_in_input.dat"
 
 module test_Rsa256Core;
 
@@ -18,6 +18,7 @@ module test_Rsa256Core;
 	logic         result_val;   // result valid
 	logic         result_rdy;   // wrapper get result
 	logic [255:0] o_a_pow_e;     // decode answer
+    integer fr_in, scanfile;
 
     Rsa256Core core(
 		.i_clk(clk),
@@ -25,8 +26,8 @@ module test_Rsa256Core;
 		.src_val(src_val),
 		.src_rdy(src_rdy),
 		.i_a(encrypted_data),
-		.i_e(256'hB6ACE0B14720169839B15FD13326CF1A1829BEAFC37BB937BEC8802FBCF46BD9),
-		.i_n(256'hCA3586E7EA485F3B0A222A4C79F7DD12E85388ECCDEE4035940D774C029CF831),
+        .i_e(256'd3),
+        .i_n(256'd33),
 		.result_val(result_val),
 		.result_rdy(result_rdy),
 		.o_a_pow_e(o_a_pow_e)
@@ -40,7 +41,7 @@ module test_Rsa256Core;
 
 	// abort if the design cannot halt
     initial begin
-        #(`CYCLE * 10000 );
+        #(`CYCLE * 100000 );
         $display( "\n" );
         $display( "Your design doesn't finish all operations data_in reasonable interval." );
         $display( "Terminated at: ", $time, " ns" );
@@ -64,19 +65,16 @@ module test_Rsa256Core;
 		rst = 0;
 
         // write your simulation here
-        integer fr, scanfile;
         fr_in = $fopen("enctpt.txt","r");
         while(!$feof(fr_in)) begin
             result_rdy = 0;
             src_val = 1;
-            scanfile = $fscanf(fr_in, "%h", encrypted_data);
-            while(!src_rdy)begin
-            end
+            scanfile = $fscanf(fr_in, "%d", encrypted_data);
+            @(posedge src_rdy)
             src_val = 0;
-            if(result_val)begin
-                $display ("Value of ans = %h", o_a_pow_e);
-                result_rdy = 1;
-            end
+            @(posedge result_val)
+            $display ("Value of ans = %d", o_a_pow_e);
+            result_rdy = 1;
             #(2*`CYCLE);
         end
 
