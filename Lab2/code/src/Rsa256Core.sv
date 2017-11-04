@@ -65,7 +65,7 @@ module Rsa256Core(
 	);
 
 //==== Combinational Part ======================================================
-	assign o_a_pow_e = ans_r
+	assign o_a_pow_e = ans_cur;
 	always_comb begin
 	// Default Value
 		// Input
@@ -90,7 +90,7 @@ module Rsa256Core(
 		mont_a_c = 0;
 		mont_b_c = 0;
 	// FSM
-		case(state_r)
+		case(state_cur)
 			IDLE: begin
 				if(src_val_cur == 1)begin
 					state_nxt = MP;
@@ -222,7 +222,7 @@ module ModuloProduct(
 		n_nxt       = n_cur;
 		start_nxt   = start_cur;
 		// FSM
-		case(state_r)
+		case(state_cur)
 			IDLE: begin
 				start_nxt = i_start;
 				if(start_cur == 1) begin
@@ -331,7 +331,7 @@ module Montgometry(
 		state_nxt = state_cur;
 		counter_nxt = counter_cur;
 		// FSM
-		case(state_r)
+		case(state_cur)
 			IDLE: begin
 				start_nxt = i_start;
 				if(start_cur == 1) begin
