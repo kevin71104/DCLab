@@ -50,21 +50,21 @@ module ReadPipeline(
   ======================================*/
 
   parameter KEY_LEN = 256;                // Number of bits for key and cipher 
-                                             text
+                                          // text
   parameter TRANS_LEN = 8;                // Number of bits for per data 
-                                             transmission
+                                          // transmission
 
   parameter TRANS_NUM = KEY_LEN/TRANS_LEN // Times of transmission required for
                                           // gathering $KEY_LEN bits by 
                                           // transmitting $TRANS_LEN bits per time
 
   localparam CHECK_READ = 1'd0;           // check whether rrdy = 1 for data 
-                                             retrevial
+                                          // retrevial
 
   localparam GET_KEY = 1'd1;              // check whether key already gotten
   localparam GET_DATA = 1'd2;             // check whether data already gotten
   localparam WAIT_CALC = 1'd3;            // check whether calculation in 
-                                             RSACore finished
+                                          // RSACore finished
 
 
   logic                         curr_state,next_state;
