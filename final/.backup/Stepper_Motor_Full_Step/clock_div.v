@@ -34,7 +34,7 @@ module clock_div#(
     // Run on the positive edge of the clk and rst signals
     always @ (posedge(clk), negedge(rst_n)) begin
         // When rst is high set count and new_clk to 0
-        if (rst == 1'b0) begin 
+        if (rst_n == 1'b0) begin 
             count = 32'b0;   
             new_clk = 1'b0;            
         end
