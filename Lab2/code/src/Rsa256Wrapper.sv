@@ -54,16 +54,25 @@ module ReadPipeline(
   parameter TRANS_LEN = 8;                // Number of bits for per data 
                                           // transmission
 
-  parameter TRANS_NUM = KEY_LEN/TRANS_LEN // Times of transmission required for
+  parameter TRANS_NUM = KEY_LEN/TRANS_LEN;// Times of transmission required for
                                           // gathering $KEY_LEN bits by 
                                           // transmitting $TRANS_LEN bits per time
 
+<<<<<<< HEAD
   localparam CHECK_READ = 1'd0;           // check whether rrdy = 1 for data 
                                           // retrevial
 
   localparam GET_KEY = 1'd1;              // check whether key already gotten
   localparam GET_DATA = 1'd2;             // check whether data already gotten
   localparam WAIT_CALC = 1'd3;            // check whether calculation in 
+=======
+  localparam CHECK_READ = 2'd0;           // check whether rrdy = 1 for data 
+                                          // retrevial
+
+  localparam GET_KEY = 2'd1;              // check whether key already gotten
+  localparam GET_DATA = 2'd2;             // check whether data already gotten
+  localparam WAIT_CALC = 2'd3;            // check whether calculation in 
+>>>>>>> 7854cc16d125a44362affbf28899a49c08ba1c5c
                                           // RSACore finished
 
 
@@ -106,7 +115,7 @@ module ReadPipeline(
   /*===== State transition ====*/
   always_comb begin 
     // default: next_state = curr_state
-    next_state = curr_state
+    next_state = curr_state;
     
     if(curr_state == CHECK_READ) begin
       if(i_wait) begin
@@ -116,7 +125,7 @@ module ReadPipeline(
         // curr_infostatus[1] == 1'b0 means nothing or only n is gotten
         next_state = GET_KEY;
       end
-      else if(!i_wait & rrdy & !curr_infostatus[2] & &curr_infostatus[1:0]) begin
+      else if(!i_wait & rrdy & !curr_infostatus[2] & (&curr_infostatus[1:0])) begin
         // curr_infostatus[1:0] == 2'b1 means n,e are already gotten
         next_state = GET_DATA;
       end
@@ -141,6 +150,7 @@ module ReadPipeline(
     else if(curr_state == GET_DATA) begin
       if(!i_wait & i_readdatavalid) begin
         next_state = CHECK_READ;
+      end
       else begin
         next_state = curr_state;
       end
@@ -284,15 +294,15 @@ module WritePipeline(
                                           // text
   parameter TRANS_LEN = 8;                // Number of bits for per data 
                                           // transmission
-  parameter TRANS_NUM = KEY_LEN/TRANS_LEN // Times of transmission required for
+  parameter TRANS_NUM = KEY_LEN/TRANS_LEN;// Times of transmission required for
                                           // gathering $KEY_LEN bits by
                                           // transmitting $TRANS_LEN bits per
                                           // time
-  parameter CHECK_WRITE = 1'd0;           // check whether rrdy = 1 for data 
+  parameter CHECK_WRITE = 2'd0;           // check whether rrdy = 1 for data 
                                           // retrieve
-  parameter FEED_DEC = 1'd1;              // check whether decrypted data already
+  parameter FEED_DEC = 2'd1;              // check whether decrypted data already
                                           // gotten
-  parameter WAIT_CALC = 1'd2;             // check whether calculation in RSACore
+  parameter WAIT_CALC = 2'd2;             // check whether calculation in RSACore
                                           // finished
   
   logic                       curr_state,next_state;
@@ -317,7 +327,7 @@ module WritePipeline(
       // curr_rdy <= 0;
       curr_state <= WAIT_CALC;
       curr_cnt <= 0;
-      curr_dec_data <= 0
+      curr_dec_data <= 0;
     end
     else begin
       curr_state <= next_state;
@@ -363,7 +373,7 @@ module WritePipeline(
   always_comb begin
     o_ren = 1'b1;
     o_wen = 1'b0;
-    o_oddress = 5'b01000;
+    o_address = 5'b01000;
     result_rdy = 1'b0;
     next_cnt = curr_cnt;
     next_dec_data = curr_dec_data;
@@ -373,10 +383,10 @@ module WritePipeline(
     if(curr_state == WAIT_CALC) begin
       o_ren = 1'b0;
       if(result_val) begin
-        next_dec_data = {i_a_pow_e[247:0], 8,b0};
+        next_dec_data = {i_a_pow_e[247:0], 8'b0};
         result_rdy = 1'b1;
       end
-      if(cnt_info) begin
+      if(cntinfo) begin
         next_cnt = 0;
         o_sent = 1'b1;
       end
@@ -389,7 +399,7 @@ module WritePipeline(
       o_ren = 1'b0;
       o_address = 5'b0100;
       next_cnt = {curr_cnt[TRANS_NUM-2:0], 1'b1};
-      next_dec_data = {curr_dec_data[247:0], 8,b0};
+      next_dec_data = {curr_dec_data[247:0], 8'b0};
     end
   end
 endmodule
