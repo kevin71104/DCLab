@@ -66,14 +66,15 @@ module test_controller;
 
         #(`CYCLE*2);
         start = 1;
+		triggerSuc = 0;
         // initial trigger
         @(posedge trigger) begin
             start = 0;
-            #(`CYCLE*2);
+
+			#(`CYCLE*2);
             triggerSuc = 1;
             #(`CYCLE*1);
             triggerSuc = 0;
-
             #(`CYCLE*10);
             valid   = 1;
             distance= 32'd900;
@@ -81,12 +82,32 @@ module test_controller;
             valid = 0;
         end
 
-        trigger_supersonic(32'd800);
+
+		@(posedge trigger) begin
+            #(`CYCLE*2);
+            triggerSuc = 1;
+            #(`CYCLE*1);
+            triggerSuc = 0;
+
+            #(`CYCLE*2.5);
+            pause   = 1;
+			#(`CYCLE*10);
+			pause = 0;
+			#(`CYCLE*2);
+            pause = 1;
+			#(`CYCLE*1);
+            pause = 0;
+        end
         trigger_supersonic(32'd600);
+
         trigger_cut;
         trigger_supersonic(32'd450);
         trigger_supersonic(32'd280);
         trigger_cut;
+
+		trigger_supersonic(32'd500);
+		trigger_supersonic(32'd740);
+		trigger_supersonic(32'd910);
 
         @(finish) $display("\nfinish\n");
 		#(`CYCLE*2);
