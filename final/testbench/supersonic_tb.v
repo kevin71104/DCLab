@@ -11,17 +11,17 @@ module test_supersonic;
 
 /*=============== reg/wire declaration =============*/
 	reg	        clk;
-	reg	        rst_n;    
+	reg	        rst_n;
     reg         trigger;
-    reg         echo;    
+    reg         echo;
     wire        valid;
     wire [31:0] distance;
 
 /*================ module instantiation ================*/
-	DOUBLE_MUL DUT(
+	supersonic DUT(
 		.clk        (clk),
 		.rst_n      (rst_n),
-		.trigger    (trigger), 
+		.trigger    (trigger),
 		.echo       (echo),
 		.valid      (valid),
 		.distance   (distance)
@@ -30,9 +30,9 @@ module test_supersonic;
 	// Dump waveform file
 	initial begin
 		$dumpfile("supersonic.vcd");
-		$dumpvars;			
+		$dumpvars;
 	end
-	
+
 	// clock signal settings
 	initial begin
         clk = 1'b0;
@@ -40,23 +40,25 @@ module test_supersonic;
     end
 
 	// test_supersonic
-	initial begin          
-        rst = 0;
+	initial begin
+        rst_n = 0;
 		#(`CYCLE*1.2);
-		rst = 1;
-		
+		rst_n = 1;
+
+
         trigger = 1;
         #(`CYCLE * 500 );
         trigger = 0;
-        
+
         echo = 1;
-        #(`CYCLE * 25 );
+        #(`CYCLE * 33'hFFFF );
         echo = 0;
-        
-        @(posedge valid) begin                
-            $display("%d",distance);                 
+
+        @(posedge valid) begin
+            $display("%d",distance);
         end
+		#(`CYCLE * 5);
 		$finish;
 	end
- 
+
 endmodule
