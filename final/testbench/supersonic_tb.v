@@ -38,20 +38,11 @@ module test_supersonic;
     end
 
 	// test_supersonic
-<<<<<<< HEAD
-	initial begin
-        rst_n = 0;
-		#(`CYCLE*1.2);
-		rst_n = 1;
-
-
-=======
 	initial begin          
         rst_n = 0;
 		#(`CYCLE*1.2);
 		rst_n = 1;
 		
->>>>>>> 97671207c914bfb7ddfb577ab68b28b84681dc93
         trigger = 1;
         #(`CYCLE * 500 );
         trigger = 0;
