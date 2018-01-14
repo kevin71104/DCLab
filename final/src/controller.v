@@ -10,7 +10,7 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
 
     // I/O with supersonic
     input        valid;
-    input        distance;
+    input [31:0] distance;
     input        triggerSuc;
     output       trigger;    // hold high for at least 10 us (500 cycles)
 
@@ -143,15 +143,15 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
 
     // FSM
     always @ ( * ) begin
-        state_nxt = state_cur;
+        state_nxt    = state_cur;
         stateTem_nxt = stateTem_cur;
-        move_nxt = 1'b0;
-        cut_nxt  = 1'b0;
-        length_nxt = length_cur;
-        segment_nxt = segment_cur;
+        move_nxt     = 1'b0;
+        cut_nxt      = 1'b0;
+        length_nxt   = length_cur;
+        segment_nxt  = segment_cur;
         location_nxt = location_cur;
-        counter_nxt = counter;
-        finish_nxt = 1'b0;
+        counter_nxt  = counter;
+        finish_nxt   = 1'b0;
         case(state_cur)
             IDLE: begin
                 if(pause) begin
@@ -319,6 +319,7 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
             cut_cur      <=  1'b0;
             length_cur   <= 32'd0;
             segment_cur  <= 32'd0;
+            location_cur <= 32'd0;
             counter      <=  5'd0;
             finish_cur   <=  1'b0;
         end
@@ -330,6 +331,7 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
             cut_cur      <=  cut_nxt;
             length_cur   <=  length_nxt;
             segment_cur  <=  segment_nxt;
+            location_cur <=  location_nxt;
             counter      <=  counter_nxt;
             finish_cur   <=  finish_nxt;
         end
