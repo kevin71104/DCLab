@@ -11,6 +11,7 @@ module test_supersonic;
     reg         trigger;
     reg         echo;    
     wire        valid;
+    wire        triggerSuc;
     wire [31:0] distance;
 
 /*================ module instantiation ================*/
@@ -20,6 +21,7 @@ module test_supersonic;
 		.trigger    (trigger), 
 		.echo       (echo),
 		.valid      (valid),
+        .triggerSuc (triggerSuc),
 		.distance   (distance)
 	);
 
