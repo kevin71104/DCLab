@@ -39,7 +39,7 @@ module Rsa256Core(
 	    .i_start(mp_start),
 	    .i_n({1'b0,n_cur}),        // since b = 2^256, a,b,n become 257 bits
 	    .i_a({1'b1,{256{1'b0}}}),
-	    .i_b({1'b0,a_cur}),  // b = 2^256
+	    .i_b({1'b0,a_cur}),        // b = 2^256
 	    .o_result(mp_result),
 	    .o_finish(mp_finish)
 	);
@@ -282,15 +282,15 @@ module ModuloProduct(
 			n_cur       <= 0;
 			start_cur   <= 0;
         end
-		else begin
-			finish_cur  <= finish_nxt;
-			m_cur       <= m_nxt;
+        else begin
+            finish_cur  <= finish_nxt;
+            m_cur       <= m_nxt;
             state_cur   <= state_nxt;
             counter_cur <= counter_nxt;
-			t_cur       <= t_nxt;
-			a_cur       <= a_nxt;
-			n_cur       <= n_nxt;
-			start_cur   <= start_nxt;
+            t_cur       <= t_nxt;
+            a_cur       <= a_nxt;
+            n_cur       <= n_nxt;
+            start_cur   <= start_nxt;
         end
     end
 
@@ -380,12 +380,12 @@ module Montgometry(
             state_cur   <= IDLE;
             counter_cur <= 0;
         end
-		else begin
-			finish_cur  <= finish_nxt;
-			m_cur       <= m_nxt;
-			a_cur       <= a_nxt;
-			b_cur       <= b_nxt;
-			n_cur       <= n_nxt;
+        else begin
+            finish_cur  <= finish_nxt;
+            m_cur       <= m_nxt;
+            a_cur       <= a_nxt;
+            b_cur       <= b_nxt;
+            n_cur       <= n_nxt;
 			//start_cur   <= start_nxt;
             state_cur   <= state_nxt;
             counter_cur <= counter_nxt;
