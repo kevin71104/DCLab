@@ -6,7 +6,7 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
     input        rst_n;
     input        start;
     input        pause;      // after 2 pauses will start again
-    input  [4:0] slice_num;  // number of cut times
+    input  [4:0] slice_num;  // number of pieces
 
     // I/O with supersonic
     input        valid;
@@ -215,14 +215,17 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
                 if (pause) begin
                     state_nxt = PAUSE;
                     stateTem_nxt = TRIGGER;
+                    move_nxt = 1'b0;
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
                     if(triggerSuc) begin
                         state_nxt = MEASURE;
+                        move_nxt = 1'b1;
                     end
                     else begin
                         state_nxt = TRIGGER;
+                        move_nxt = 1'b0;
                     end
                 end
             end

@@ -6,24 +6,24 @@ module test_controller;
 
 /*=============== reg/wire declaration =============*/
 	reg	        clk;
-	reg	        rst_n;    
+	reg	        rst_n;
     reg         start;
-    reg         pause;   
-    reg  [4:0]  slice_num;  
-    
+    reg         pause;
+    reg  [4:0]  slice_num;
+
     // I/O with supersonic
-    reg         valid;  
-    reg  [31:0] distance;  
-    reg         triggerSuc;  
+    reg         valid;
+    reg  [31:0] distance;
+    reg         triggerSuc;
     wire        trigger;
-    
+
     // I/O with Move Controller
     wire        move;
-    
+
     // I/O with Cut controller
-    reg         cut_end;    
+    reg         cut_end;
     wire        cut;
-    
+
     wire        finish;
 
 /*================ module instantiation ================*/
@@ -46,9 +46,9 @@ module test_controller;
 	// Dump waveform file
 	initial begin
 		$dumpfile("controller.vcd");
-		$dumpvars;			
+		$dumpvars;
 	end
-	
+
 	// clock signal settings
 	initial begin
         clk = 1'b0;
@@ -56,14 +56,14 @@ module test_controller;
     end
 
 	// test_supersonic
-	initial begin 
-        slice_num   = 5'd2;
+	initial begin
+        slice_num   = 5'd3;
         pause       = 0;
-        
+
         rst_n = 0;
 		#(`CYCLE*1.2);
 		rst_n = 1;
-		
+
         #(`CYCLE*2);
         start = 1;
         // initial trigger
@@ -73,23 +73,26 @@ module test_controller;
             triggerSuc = 1;
             #(`CYCLE*1);
             triggerSuc = 0;
-            
+
             #(`CYCLE*10);
             valid   = 1;
             distance= 32'd900;
-        end        
-        
+			#(`CYCLE*1);
+            valid = 0;
+        end
+
         trigger_supersonic(32'd800);
         trigger_supersonic(32'd600);
         trigger_cut;
         trigger_supersonic(32'd450);
         trigger_supersonic(32'd280);
         trigger_cut;
-        
+
         @(finish) $display("\nfinish\n");
+		#(`CYCLE*2);
 		$finish;
 	end
-    
+
     // abort if the design cannot halt
     initial begin
         #(`CYCLE * 10000 );
@@ -99,18 +102,20 @@ module test_controller;
         $display( "\n" );
         $finish;
     end
-   
+
     task trigger_supersonic;
         input [31:0] set_distance;
         @(posedge trigger) begin
             #(`CYCLE*2);
             triggerSuc = 1;
             #(`CYCLE*1);
-            triggerSuc = 0;              
+            triggerSuc = 0;
             #(`CYCLE*10);
             valid   = 1;
             distance= set_distance;
-        end   
+			#(`CYCLE*1);
+            valid = 0;
+        end
     endtask
 
     task trigger_cut;
@@ -121,5 +126,5 @@ module test_controller;
             cut_end = 1'd0;
         end
     endtask
- 
+
 endmodule

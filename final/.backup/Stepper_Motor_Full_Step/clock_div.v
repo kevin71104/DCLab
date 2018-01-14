@@ -1,55 +1,48 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: Digilent    
-// Engineer: Kaitlyn Franz
-// 
-// Create Date: 01/23/2016 03:44:35 PM
-// Design Name: Claw
+
+// Team number: 5
+// Author: Edwin Chen
+//
+// Create Date: 01/14/2018
+// Project Name: Kitchen's helper
 // Module Name: clock_div
-// Project Name: Claw_game
-// Target Devices: Basys3
-// Tool Versions: 2015.4
+// Target Devices: DES-115
 // Description: This is a clock divider. It takes the system clock 
 // and divides that down to a slower clock. It counts at the rate of the 
 // system clock to define_speed and toggles the output clock signal. 
-// 
-// Dependencies: 
-// 
-// Revision: 1
-// Revision 0.01 - File Created
-// Additional Comments: 
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 
-module clock_div(
+
+module clock_div#(
+  parameter define_speed = 10 // Unit: ms 
+)
+(
     input clk,
-    input rst,
+    input rst_n,
     output reg new_clk
-    );
+);
     
     // The constant that defines the clock speed. 
-    // Since the system clock is 100MHZ, 
-    // define_speed = 100MHz/(2*desired_clock_frequency)
-    localparam define_speed = 26'd5000000;
+    // Since the system clock is 50MHZ, 
+    // define_speed = 50MHz/(2*desired_clock_frequency)
+    // localparam desired_clock_freq = 50Hz
+    localparam define_cycle = 2500000/define_speed;
     
     // Count value that counts to define_speed
-    reg [25:0] count;
+    reg [32:0] count;
     
     // Run on the positive edge of the clk and rst signals
-    always @ (posedge(clk),posedge(rst))
-    begin
+    always @ (posedge(clk), negedge(rst_n)) begin
         // When rst is high set count and new_clk to 0
-        if (rst == 1'b1)
-        begin 
-            count = 26'b0;   
+        if (rst_n == 1'b0) begin 
+            count = 32'b0;   
             new_clk = 1'b0;            
         end
         // When the count has reached the constant
         // reset count and toggle the output clock
-        else if (count == define_speed)
+        else if (count == define_cycle)
         begin
-            count = 26'b0;
+            count = 32'b0;
             new_clk = ~new_clk;
         end
         // increment the clock and keep the output clock

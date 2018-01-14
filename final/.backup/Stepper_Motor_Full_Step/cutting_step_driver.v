@@ -5,13 +5,13 @@
 // 
 // Create Date: 01/14/2018
 // Project Name: Kitchen's helper
-// Module Name: pmod_step_driver
+// Module Name: track_step_driver
 // Target Devices: DES-115
 // Description: This is the state machine that drives
 // the output to the PmodSTEP. It alternates one of four pins being
 // high at a rate set by the clock divider. 
 
-module pmod_step_driver(
+module track_step_driver(
     input rst_n,
     input direction,
     input clk,
@@ -35,6 +35,13 @@ module pmod_step_driver(
     localparam begin_sig_1 = 4'b0001;
     localparam begin_sig_2 = 4'b0011;
         
+    // 1 2 3 4 -th bit
+    // A B A'B'
+    // clockwise
+    // 4->3->2->1
+    // counter-clockwise
+    // 1->2->3->4
+
     localparam sig0 = 4'b0;
     // "One phase mode"
     localparam sig1_1 = 4'b0001;
@@ -52,15 +59,10 @@ module pmod_step_driver(
 
     // Use registers to hold the values of the present and next states
     reg [2:0] curr_state, next_state;
-    
-    // Use cnt to record the degrees that the rotation have achieved 
-    // One step = 0.9 DEG, One round = 360/0.9 = 400 steps
-    reg [10:0] curr_cnt_0, next_cnt_0;  
-    reg [10:0] curr_cnt_1, next_cnt_1;
 
     // Run when the present state, direction or enable signals change.
-    always@(*) begin
-        case(present_state)
+    always @ (*) begin
+        case(curr_state)
         // If the state is sig4, the state where
         // the fourth signal is held high. 
         sig4: begin
@@ -69,13 +71,10 @@ module pmod_step_driver(
             // is high and enable is high
             // next state is sig1. If enable is low
             // next state is sig0.
-            next_cnt = curr_cnt;
             if (direction == 1'b0 && en == 1'b1)
                 next_state = sig3;
-                next_cnt = curr_cnt_0 + 1;
             else if (direction == 1'b1 && en == 1'b1)
                 next_state = sig1;
-                next_cnt = curr_cnt_1 + 1;
             else 
                 next_state = sig0;
         end  
@@ -85,9 +84,9 @@ module pmod_step_driver(
             // is high and enable is high
             // next state is sig4. If enable is low
             // next state is sig0.
-            if (dir == 1'b0&& en == 1'b1)
+            if (direction == 1'b0 && en == 1'b1)
                 next_state = sig2;
-            else if (dir == 1'b1 && en == 1'b1)
+            else if (direction == 1'b1 && en == 1'b1)
                 next_state = sig4;
             else 
                 next_state = sig0;
@@ -98,29 +97,27 @@ module pmod_step_driver(
             // is high and enable is high
             // next state is sig3. If enable is low
             // next state is sig0.
-            if (dir == 1'b0&& en == 1'b1)
+            if (direction == 1'b0 && en == 1'b1)
                 next_state = sig1;
-            else if (dir == 1'b1 && en == 1'b1)
+            else if (direction == 1'b1 && en == 1'b1)
                 next_state = sig3;
             else 
                 next_state = sig0;
         end 
-        sig1:
-        begin
+        sig1: begin
             // If direction is 0 and enable is high
             // the next state is sig4. If direction
             // is high and enable is high
             // next state is sig2. If enable is low
             // next state is sig0.
-            if (dir == 1'b0&& en == 1'b1)
+            if (direction == 1'b0 && en == 1'b1)
                 next_state = sig4;
-            else if (dir == 1'b1 && en == 1'b1)
+            else if (direction == 1'b1 && en == 1'b1)
                 next_state = sig2;
             else 
                 next_state = sig0;
         end
-        sig0:
-        begin
+        sig0: begin
             // If enable is high
             // the next state is sig1. 
             // If enable is low
@@ -139,12 +136,11 @@ module pmod_step_driver(
     // state value to the present state 
     // on the positive edge of clock
     // or reset. 
-    always @ (posedge clk, posedge rst)
-    begin
-        if (rst == 1'b1)
-            present_state = sig0;
+    always @ (posedge clk, negedge rst_n) begin
+        if (rst_n == 1'b0)
+            curr_state = sig0;
         else 
-            present_state = next_state;
+            curr_state = next_state;
     end
     
     // Output Logic
@@ -153,14 +149,18 @@ module pmod_step_driver(
     // value.     
     always @ (posedge clk)
     begin
-        if (present_state == sig4)
-            signal = 4'b1000;
-        else if (present_state == sig3)
-            signal = 4'b0100;
-        else if (present_state == sig2)
-            signal = 4'b0010;
-        else if (present_state == sig1)
-            signal = 4'b0001;
+        if (curr_state == sig4)
+            signal = 4'b1001;
+            // signal = 4'b1000;
+        else if (curr_state == sig3)
+            signal = 4'b1100;
+            // signal = 4'b0100;
+        else if (curr_state == sig2)
+            signal = 4'b0110;          
+            // signal = 4'b0010;
+        else if (curr_state == sig1)
+            signal = 4'b0011;
+            // signal = 4'b0001;
         else
             signal = 4'b0000;
     end
