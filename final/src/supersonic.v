@@ -12,26 +12,57 @@ module supersonic(clk, rst_n, valid, echo, trigger, distance);
     output [31:0] distance; // number of cycles
 //==== wire/reg definition ================================
     reg  [31:0] distance_cur;
-    wire [31:0] distance_nxt;
+    reg  [31:0] distance_nxt;
     reg         valid_cur;
     wire        valid_nxt;
 
     reg         state_cur;  // after trigger high for 500 cycle
-    wire        state_nxt;
+    reg         state_nxt;
     reg  [ 8:0] counter;    // needs at least 500 cycles to trigger
-    wire [ 8:0] counter_nxt;
+    reg  [ 8:0] counter_nxt;
 //==== combinational circuit
     // output
     assign valid = valid_cur;
     assign distance = distance_cur;
 
     // distance
-    assign distance_nxt = (state_cur & echo) ? distance_cur + 1 : 32'd0;
     assign valid_nxt = (~ echo & state_cur);
 
     // trigger part
-    assign state_nxt = (counter == 9'd500) ? 1 : state_cur;
-    assign counter_nxt = (counter == 9'd500 | ~ trigger) ? 9'd0 : counter + 1
+
+    always @ ( * ) begin
+        distance_nxt = distance_cur;
+        state_nxt = state_cur;
+        case (state_cur)
+            1'b0: begin
+                if (counter == 9'd500)begin
+                    state_nxt = 1'b1;
+                    distance_nxt = 32'd0;
+                end
+                else begin
+                    state_nxt = state_cur;
+                    distance_nxt = distance_cur;
+                end
+
+                if (counter == 9'd500 | ~ trigger)begin
+                    counter_nxt = 9'd0;
+                end
+                else begin
+                    counter_nxt = counter + 1;
+                end
+            end
+            1'b1: begin
+                if (echo)begin
+                    distance_nxt = distance_cur + 1;
+                    state_nxt = state_cur;
+                end
+                else begin
+                    distance_nxt = distance_cur + 1;
+                    state_nxt = 1'b0;
+                end
+            end
+        endcase
+    end
 
 //==== synchronous circuit
     always @(posedge clk or negedge rst_n) begin
