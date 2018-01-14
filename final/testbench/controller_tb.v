@@ -13,7 +13,7 @@ module test_controller;
     
     // I/O with supersonic
     reg         valid;  
-    reg         distance;  
+    reg  [31:0] distance;  
     reg         triggerSuc;  
     wire        trigger;
     
@@ -23,6 +23,8 @@ module test_controller;
     // I/O with Cut controller
     reg         cut_end;    
     wire        cut;
+    
+    wire        finish;
 
 /*================ module instantiation ================*/
 	controller DUT(
@@ -37,7 +39,8 @@ module test_controller;
 		.trigger    (trigger),
 		.move       (move),
 		.cut_end    (cut_end),
-		.cut        (cut)
+		.cut        (cut),
+        .finish     (finish)
 	);
 
 	// Dump waveform file
@@ -53,17 +56,70 @@ module test_controller;
     end
 
 	// test_supersonic
-	initial begin          
+	initial begin 
+        slice_num   = 5'd2;
+        pause       = 0;
+        
         rst_n = 0;
 		#(`CYCLE*1.2);
 		rst_n = 1;
 		
-
+        #(`CYCLE*2);
+        start = 1;
+        // initial trigger
+        @(posedge trigger) begin
+            start = 0;
+            #(`CYCLE*2);
+            triggerSuc = 1;
+            #(`CYCLE*1);
+            triggerSuc = 0;
+            
+            #(`CYCLE*10);
+            valid   = 1;
+            distance= 32'd900;
+        end        
         
-        @(posedge valid) begin                
-            $display("%d",distance);                 
-        end
+        trigger_supersonic(32'd800);
+        trigger_supersonic(32'd600);
+        trigger_cut;
+        trigger_supersonic(32'd450);
+        trigger_supersonic(32'd280);
+        trigger_cut;
+        
+        @(finish) $display("\nfinish\n");
 		$finish;
 	end
+    
+    // abort if the design cannot halt
+    initial begin
+        #(`CYCLE * 10000 );
+        $display( "\n" );
+        $display( "Your design doesn't finish all operations in reasonable interval." );
+        $display( "Terminated at: ", $time, " ns" );
+        $display( "\n" );
+        $finish;
+    end
+   
+    task trigger_supersonic;
+        input [31:0] set_distance;
+        @(posedge trigger) begin
+            #(`CYCLE*2);
+            triggerSuc = 1;
+            #(`CYCLE*1);
+            triggerSuc = 0;              
+            #(`CYCLE*10);
+            valid   = 1;
+            distance= set_distance;
+        end   
+    endtask
+
+    task trigger_cut;
+        @(cut) begin
+            #(`CYCLE*10);
+            cut_end = 1'd1;
+            #(`CYCLE*1);
+            cut_end = 1'd0;
+        end
+    endtask
  
 endmodule
