@@ -6,7 +6,7 @@
 // Create Date: 01/14/2018
 // Project Name: Kitchen's helper
 // Module Name: clock_div
-// Target Devices: DES-115
+// Target Devices: DE2-115
 // Description: This is a clock divider. It takes the system clock 
 // and divides that down to a slower clock. It counts at the rate of the 
 // system clock to define_speed and toggles the output clock signal. 
@@ -32,7 +32,7 @@ module clock_div#(
     reg [32:0] count;
     
     // Run on the positive edge of the clk and rst signals
-    always @ (posedge(clk), negedge(rst_n)) begin
+    always @ (posedge clk or negedge rst_n) begin
         // When rst is high set count and new_clk to 0
         if (rst_n == 1'b0) begin 
             count = 32'b0;   
