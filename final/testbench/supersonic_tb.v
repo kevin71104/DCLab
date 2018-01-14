@@ -1,7 +1,3 @@
-/*============================================================
-TESTBENCH for DOUBLE_MUL module:
-
- ============================================================*/
 `timescale 1ns/100ps
 `define CYCLE  20.0
 `define H_CYCLE (`CYCLE/2)
@@ -18,7 +14,7 @@ module test_supersonic;
     wire [31:0] distance;
 
 /*================ module instantiation ================*/
-	DOUBLE_MUL DUT(
+	supersonic DUT(
 		.clk        (clk),
 		.rst_n      (rst_n),
 		.trigger    (trigger), 
@@ -41,9 +37,9 @@ module test_supersonic;
 
 	// test_supersonic
 	initial begin          
-        rst = 0;
+        rst_n = 0;
 		#(`CYCLE*1.2);
-		rst = 1;
+		rst_n = 1;
 		
         trigger = 1;
         #(`CYCLE * 500 );
