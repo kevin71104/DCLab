@@ -58,12 +58,21 @@ module ReadPipeline(
                                           // gathering $KEY_LEN bits by 
                                           // transmitting $TRANS_LEN bits per time
 
+<<<<<<< HEAD
+  localparam CHECK_READ = 1'd0;           // check whether rrdy = 1 for data 
+                                          // retrevial
+
+  localparam GET_KEY = 1'd1;              // check whether key already gotten
+  localparam GET_DATA = 1'd2;             // check whether data already gotten
+  localparam WAIT_CALC = 1'd3;            // check whether calculation in 
+=======
   localparam CHECK_READ = 2'd0;           // check whether rrdy = 1 for data 
                                           // retrevial
 
   localparam GET_KEY = 2'd1;              // check whether key already gotten
   localparam GET_DATA = 2'd2;             // check whether data already gotten
   localparam WAIT_CALC = 2'd3;            // check whether calculation in 
+>>>>>>> 7854cc16d125a44362affbf28899a49c08ba1c5c
                                           // RSACore finished
 
 

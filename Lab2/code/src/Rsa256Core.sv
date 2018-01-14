@@ -160,8 +160,8 @@ module Rsa256Core(
 		endcase
 	end
 //==== Synchronous Part ========================================================
-	always_ff @(posedge i_clk or posedge i_rst) begin
-        if (i_rst) begin
+	always_ff @(posedge i_clk or negedge i_rst) begin
+        if (!i_rst) begin
 			a_cur <= 0;
 			e_cur <= 0;
 			n_cur <= 0;
@@ -271,8 +271,8 @@ module ModuloProduct(
 	end
 
 //==== Synchronous Part ========================================================
-	always_ff @(posedge i_clk or posedge i_rst) begin
-        if (i_rst) begin
+	always_ff @(posedge i_clk or negedge i_rst) begin
+        if (!i_rst) begin
 			finish_cur  <= 0;
 			m_cur       <= 0;
             state_cur   <= IDLE;
@@ -369,8 +369,8 @@ module Montgometry(
 	end
 
 //==== Synchronous Part ========================================================
-	always_ff @(posedge i_clk or posedge i_rst) begin
-        if (i_rst) begin
+	always_ff @(posedge i_clk or negedge i_rst) begin
+        if (!i_rst) begin
 			finish_cur  <= 0;
 			m_cur       <= 0;
 			a_cur       <= 0;
