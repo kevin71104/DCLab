@@ -1,10 +1,10 @@
-module supersonic(clk, rst, valid, echo, trigger, distance);
+module supersonic(clk, rst_n, valid, echo, trigger, distance);
 // a clock is 20 ns
 // After every detection, keep 50 ms spacing for prevention of interference
 
 //==== input/output definition ============================
     input         clk;
-    input         rst;
+    input         rst_n;
     input         trigger;  // keep high for at least 10 us
     input         echo;     // after triggered, it will send 8 pulse and raise
                             // high 'echo'
@@ -34,9 +34,9 @@ module supersonic(clk, rst, valid, echo, trigger, distance);
     assign counter_nxt = (counter == 9'd500 | ~ trigger) ? 9'd0 : counter + 1
 
 //==== synchronous circuit
-    always @(posedge clk or negedge rst) begin
+    always @(posedge clk or negedge rst_n) begin
         // asynchronous reset
-        if (~rst) begin
+        if (~rst_n) begin
             counter      <=  9'b0;
             state_cur    <=  1'b0;
             valid_cur    <=  1'b0;
