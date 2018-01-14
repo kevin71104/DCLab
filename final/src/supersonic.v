@@ -56,6 +56,7 @@ module supersonic(clk, rst_n, valid, echo, trigger, triggerSuc, distance);
                 end
             end
             1'b1: begin
+                triggerSuc_nxt = 1'b0;
                 if (distance_cur != 32'hFFFFFFFF)begin
                     if (echo)begin
                         distance_nxt = distance_cur + 1;
