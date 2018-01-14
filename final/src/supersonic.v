@@ -1,5 +1,5 @@
 module supersonic(clk, rst_n, valid, echo, trigger, distance);
-// a clock is 20 ns
+// a clock cycle is 20 ns
 // After every detection, keep 50 ms spacing for prevention of interference
 
 //==== input/output definition ============================
