@@ -62,7 +62,7 @@ module track_step_driver(
 
     // Run when the present state, direction or enable signals change.
     always @ (*) begin
-        case(present_state)
+        case(curr_state)
         // If the state is sig4, the state where
         // the fourth signal is held high. 
         sig4: begin
@@ -99,7 +99,7 @@ module track_step_driver(
             // next state is sig0.
             if (direction == 1'b0 && en == 1'b1)
                 next_state = sig1;
-            else if (dir == 1'b1 && en == 1'b1)
+            else if (direction == 1'b1 && en == 1'b1)
                 next_state = sig3;
             else 
                 next_state = sig0;
@@ -138,9 +138,9 @@ module track_step_driver(
     // or reset. 
     always @ (posedge clk, negedge rst_n) begin
         if (rst_n == 1'b0)
-            present_state = sig0;
+            curr_state = sig0;
         else 
-            present_state = next_state;
+            curr_state = next_state;
     end
     
     // Output Logic
@@ -149,16 +149,16 @@ module track_step_driver(
     // value.     
     always @ (posedge clk)
     begin
-        if (present_state == sig4)
+        if (curr_state == sig4)
             signal = 4'b1001;
             // signal = 4'b1000;
-        else if (present_state == sig3)
+        else if (curr_state == sig3)
             signal = 4'b1100;
             // signal = 4'b0100;
-        else if (present_state == sig2)
+        else if (curr_state == sig2)
             signal = 4'b0110;          
             // signal = 4'b0010;
-        else if (present_state == sig1)
+        else if (curr_state == sig1)
             signal = 4'b0011;
             // signal = 4'b0001;
         else
