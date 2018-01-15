@@ -135,6 +135,9 @@ module DE2_115(
 	output [16:0] HSMC_TX_D_P,
 	inout [6:0] EX_IO
 );
+//=========== wire declaration ============
+    localparam define_speed = 10;
+    
     // KEY[1] KEY[2]
     logic       start;
     logic       pause;
@@ -143,13 +146,28 @@ module DE2_115(
     logic       slice;
     logic [4:0] slice_num;
     
-    // controller <-> supersonic
-    logic trigger;
-    logic echo;
-    logic valid;
-    logic triggerSuc;
-    logic [31:0] distance;
+    // controller 
+    logic           trigger;
+    logic           valid;
+    logic           triggerSuc;
+    logic [31:0]    distance;
+    logic           finish;
+    logic           cut;
+    logic           cut_end;
+    logic           move;
+    logic           back;
     
+    // cut
+    logic   new_clk0;
+    logic   en_cut;
+    logic   direction_cut;
+    
+    // move
+    logic   new_clk1;
+
+// ============ On Board FPGA =============
+ 
+    // KEY + Debounce
 	Debounce deb1(
 		.i_in(KEY[1]),
 		.i_rst(KEY[0]),
@@ -169,46 +187,14 @@ module DE2_115(
 		.o_neg(slice)
 	);
     
-    slice_counter slice_counter0(
-        .clk        (CLOCK_50),
-        .rst_n      (KEY[0]),
-        .slice_i    (slice),
-        .slice_num_o(slice_num) 
-    )
-    
-    controller controller(
-        .clk        (CLOCK_50),
-		.rst_n      (KEY[0]),
-		.start      (start),
-		.pause      (pause),
-		.slice_num  (slice_num),
-		.valid      (valid),
-		.distance   (distance),
-		.triggerSuc (triggerSuc),
-		.trigger    (trigger),
-		.move       (),
-		.cut_end    (),
-		.cut        (),
-        .finish     ()
-    )
-    
-    supersonic supersonic0(
-		.clk        (CLOCK_50),
-		.rst_n      (KEY[0]),
-		.trigger    (trigger), 
-		.echo       (echo),
-		.valid      (valid),
-        .triggerSuc (triggerSuc),
-		.distance   (distance)
-	);
-
-    
+    // 7 segment displayer
 	SevenHexDecoder seven_dec0(
         .clk        (CLOCK_50)
         .rst_n      (KEY[0])
-        .start_i    (KEY[1]),
-        .pause_i    (KEY[2]),
+        .start_i    (start),
+        .pause_i    (pause),
         .slice_num_i(slice_num), // cut into how many pieces
+        .finish_i   (finish),
         .HEX0_o     (HEX0),  
         .HEX1_o     (HEX1),
         .HEX2_o     (HEX2),
@@ -219,4 +205,86 @@ module DE2_115(
         .HEX7_o     (HEX7)
 	);
 
+//========== FPGA Logic Design =============
+   
+    controller controller(
+        .clk        (CLOCK_50),
+		.rst_n      (KEY[0]),
+		.start      (start),
+		.pause      (pause),
+		.slice_num  (slice_num),
+		.valid      (valid),
+		.distance   (distance),
+		.triggerSuc (triggerSuc),
+		.trigger    (trigger),
+		.move       (move),
+        .back       (back),
+		.cut_end    (cut_end),
+		.cut        (cut),
+        .finish     (finish)
+    )
+    
+    supersonic supersonic0(
+		.clk        (CLOCK_50),
+		.rst_n      (KEY[0]),
+		.echo       (),
+		.valid      (valid),
+		.distance   (distance),
+        .triggerSuc (triggerSuc),
+		.trigger    (trigger)
+	);
+
+    // cut
+    cut_controller #(
+        .define_speed(define_speed)
+    )cut_controller0(
+		.clk        (CLOCK_50),
+		.rst_n      (KEY[0]),
+		.cut_i      (cut),
+		.cut_end_o  (cut_end),
+		.en_o       (en_cut),
+        .direction_o(direction_cut)
+    );
+    
+    clock_div #(
+        .define_speed(define_speed)
+    )clock_div0(
+		.clk        (CLOCK_50),
+		.rst_n      (KEY[0]),
+		.new_clk    (new_clk0) 
+    );
+    
+    track_step_driver cutting_step_driver0(
+		.clk        (new_clk0),
+		.rst_n      (KEY[0]),
+		.en         (en_cut),
+		.direction  (direction_cut), 
+		.signal     ()
+    );
+    
+    slice_counter slice_counter0(
+        .clk        (CLOCK_50),
+        .rst_n      (KEY[0]),
+        .slice_i    (slice),
+        .slice_num_o(slice_num) 
+    )
+    
+    // move
+    clock_div #(
+        .define_speed(define_speed)
+    )clock_div1(
+		.clk        (CLOCK_50),
+		.rst_n      (KEY[0]),
+		.new_clk    (new_clk1) 
+    );
+    
+    track_step_driver track_step_driver0(
+		.clk        (new_clk1),
+		.rst_n      (KEY[0]),
+		.en         (move),
+		.direction  (back), 
+		.signal     ()
+    );
+
+    
 endmodule
