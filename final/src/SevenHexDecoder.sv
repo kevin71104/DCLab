@@ -35,6 +35,9 @@ module SevenHexDecoder(
 	localparam D7   = 7'b1011000;
 	localparam D8   = 7'b0000000;
 	localparam D9   = 7'b0010000;
+	
+	logic pre_pause;
+	logic [2:0]cnt, nxt_cnt;
     
     logic [6:0] HEX0, nxt_HEX0;
     logic [6:0] HEX1, nxt_HEX1;
@@ -71,9 +74,18 @@ module SevenHexDecoder(
     assign HEX3_o = HEX3;
     assign HEX4_o = HEX4;
     assign HEX5_o = DARK;
+	 
+	 always_comb begin
+	   if(cnt == 3'd4)
+			nxt_cnt = 0;
+		if(pause_i ^ pre_pause)
+			nxt_cnt = cnt + 1'b1;
+		else
+			nxt_cnt = cnt;
+	 end
     
     always_comb begin
-        if(pause_i) begin // PAUSE
+        if(pause_i && cnt == 0) begin // PAUSE
             nxt_HEX0 = 7'b0000110;
             nxt_HEX1 = 7'b0010010;
             nxt_HEX2 = 7'b1000001;
@@ -81,7 +93,7 @@ module SevenHexDecoder(
             nxt_HEX4 = 7'b0001100;
         end
         else
-        if(start_i) begin // GO
+        if(start_i || (pause_i && cnt == 3'd2)) begin // GO, press pause twice
             nxt_HEX0 = D0;
             nxt_HEX1 = D6;
             nxt_HEX2 = DARK;
@@ -107,18 +119,22 @@ module SevenHexDecoder(
 	end
     
     always_ff @(posedge clk or negedge rst_n) begin
-		if (!rst_n) begin // PAUSE
-			HEX0 <= 7'b0000110;
-			HEX1 <= 7'b0010010;
-			HEX2 <= 7'b1000001;
-			HEX3 <= 7'b0001000;
-			HEX4 <= 7'b0001100;
+		if (!rst_n) begin // RESET
+			HEX0 <= 7'b1111000;
+			HEX1 <= 7'b0000110;
+			HEX2 <= 7'b0010010;
+			HEX3 <= 7'b0000110;
+			HEX4 <= 7'b0001000;
+			pre_pause <= 0;
+			cnt <= 0;
 		end else begin
 			HEX0 <= nxt_HEX0;
 			HEX1 <= nxt_HEX1;
 			HEX2 <= nxt_HEX2;
 			HEX3 <= nxt_HEX3;
 			HEX4 <= nxt_HEX4;
+			pre_pause <= pause_i;
+			cnt <= nxt_cnt;
 		end
 	end
     
