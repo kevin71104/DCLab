@@ -11,7 +11,7 @@
 // the output to the PmodSTEP. It alternates one of four pins being
 // high at a rate set by the clock divider. 
 
-module track_step_driver(
+module cutting_step_driver(
     input rst_n,
     input direction,
     input clk,
