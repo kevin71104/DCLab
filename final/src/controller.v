@@ -288,15 +288,14 @@ module controller#(
                 else begin
                     stateTem_nxt = stateTem_cur;
                     if(valid) begin
+						move_nxt = 1'b0;
                         if( distance <= location_cur - segment_cur)begin
                             // GO TO CUT
-                            move_nxt = 1'b0;
                             cut_nxt = 1'b1;
                             state_nxt = CUT;
                             counter_nxt = counter + 1;
                         end
                         else begin
-                            move_nxt = 1'b1;
                             cut_nxt = 1'b0;
                             state_nxt = TRIGGER;
                             counter_nxt = counter;
@@ -380,17 +379,15 @@ module controller#(
                 else begin
                     stateTem_nxt = stateTem_cur;
                     if(valid) begin
-                        if( distance >= length_cur)begin
-                            move_nxt = 1'b0;
+						move_nxt = 1'b0;
+						back_nxt = 1'b0;
+                        if( distance >= length_cur)begin 
                             state_nxt = IDLE;
                             finish_nxt = 1'b1;
-                            back_nxt = 1'b0;
                         end
                         else begin
-                            move_nxt = 1'b1;
                             state_nxt = BACK_TRI;
-                            finish_nxt = 1'b0;
-                            back_nxt = 1'b1;
+                            finish_nxt = 1'b0;                          
                         end
                     end
                     else begin

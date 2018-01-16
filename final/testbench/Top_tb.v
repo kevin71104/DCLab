@@ -70,7 +70,7 @@ module test_Top;
 		#(`CYCLE*1.2);
 		rst_n = 1;		
         #(`CYCLE*2); 
-        
+        pause_i = 0;
         // slice_num = 4
         slice;
         slice;
