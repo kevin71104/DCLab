@@ -1,3 +1,0 @@
-Command Line: /opt/CAD/verdi/cur/platform/LINUXAMD64/bin/vfast -silent -del . -o /home/team05/Lab1/src/Top.vcd.fsdb -ft verilog /home/team05/Lab1/src/Top.vcd
-uname(Linux dclab-server 3.16.0-38-generic #52~14.04.1-Ubuntu SMP Fri May 8 09:43:57 UTC 2015 x86_64)
-au time 0.244624 0.239637 0.003395 delta 8175616 10276864 total 8242168 10343416
