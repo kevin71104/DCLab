@@ -1,29 +1,33 @@
-module supersonic(
-    input         clk,
-    input         rst_n,
-    input         trigger,  // keep high for at least 10 us
-    input         echo,     // after triggered, it will send 8 pulse and raise
-                            // high 'echo'
-    output        valid,
-    output        triggerSuc,
-    output [31:0] distance  // number of cycles
+module supersonic#(
+    parameter DisLen = 16,
+	parameter TotLen = DisLen + 1
+)
+(
+    input             clk,
+    input             rst_n,
+    input             trigger,  // keep high for at least 10 us
+    input             echo,     // after triggered, it will send 8 pulse and raise
+                                // high 'echo'
+    output            valid,
+    output            triggerSuc,
+    output [DisLen:0] distance  // number of cycles
 );
 
 // a clock cycle is 20 ns
 // After every detection, keep 50 ms spacing for prevention of interference
 
 //==== wire/reg definition ================================
-    reg  [31:0] distance_cur;
-    reg  [31:0] distance_nxt;
-    reg         valid_cur;
-    reg         valid_nxt;
+    reg  [DisLen:0] distance_cur;
+    reg  [DisLen:0] distance_nxt;
+    reg             valid_cur;
+    reg             valid_nxt;
 
-    reg         state_cur;  // after trigger high for 500 cycle
-    reg         state_nxt;
-    reg  [ 8:0] counter;    // needs at least 500 cycles to trigger
-    reg  [ 8:0] counter_nxt;
-    reg         triggerSuc_cur;
-    reg         triggerSuc_nxt;
+    reg             state_cur;  // after trigger high for 500 cycle
+    reg             state_nxt;
+    reg  [     8:0] counter;    // needs at least 500 cycles to trigger
+    reg  [     8:0] counter_nxt;
+    reg             triggerSuc_cur;
+    reg             triggerSuc_nxt;
     
 //==== combinational circuit
     // output
@@ -41,7 +45,7 @@ module supersonic(
             1'b0: begin
                 if (counter == 9'd500)begin
                     state_nxt       = 1'b1;
-                    distance_nxt    = 32'd0;
+                    distance_nxt    = {TotLen{1'b0}};
                     triggerSuc_nxt  = 1'b1;
                 end
                 else begin
@@ -59,7 +63,7 @@ module supersonic(
             end
             1'b1: begin
                 triggerSuc_nxt = 1'b0;
-                if (distance_cur != 32'hFFFFFFFF)begin
+                if (distance_cur != {TotLen{1'b1}})begin
                     if (echo)begin
                         distance_nxt= distance_cur + 1;
                         state_nxt   = state_cur;
@@ -72,7 +76,7 @@ module supersonic(
                     end
                 end
                 else begin
-                    distance_nxt= 32'd0;
+                    distance_nxt= {TotLen{1'b0}};
                     state_nxt   = 1'b0;
                     valid_nxt   = 1'b0;
                 end
@@ -84,10 +88,10 @@ module supersonic(
     always @(posedge clk or negedge rst_n) begin
         // asynchronous reset
         if (~rst_n) begin
-            counter        <=  9'b0;
-            state_cur      <=  1'b0;
-            valid_cur      <=  1'b0;
-            distance_cur   <= 32'b0;
+            counter        <= 9'b0;
+            state_cur      <= 1'b0;
+            valid_cur      <= 1'b0;
+            distance_cur   <= {TotLen{1'b0}};
             triggerSuc_cur <= 1'b0;
         end
         else begin

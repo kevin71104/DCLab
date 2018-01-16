@@ -1,4 +1,8 @@
-module controller(
+module controller#(
+    parameter DisLen = 16,
+	parameter TotLen = DisLen + 1
+)
+(
     input        clk,
     input        rst_n,
     input        start,
@@ -6,10 +10,10 @@ module controller(
     input  [4:0] slice_num,  // number of pieces (power of 2)
 
     // I/O with supersonic
-    input        valid,
-    input [31:0] distance,
-    input        triggerSuc,
-    output       trigger,    // hold high for at least 10 us (500 cycles)
+    input            valid,
+    input [DisLen:0] distance,
+    input            triggerSuc,
+    output           trigger,    // hold high for at least 10 us (500 cycles)
 
     // I/O with Move Controller
     output       move,
@@ -21,6 +25,17 @@ module controller(
 
     output       finish
 );
+
+//==== Parameter declaration ============================
+    parameter IDLE     = 4'd0;
+    parameter INIT_TRI = 4'd1;
+    parameter INIT_MEA = 4'd2;
+    parameter TRIGGER  = 4'd3;
+    parameter MEASURE  = 4'd4;
+    parameter CUT      = 4'd5;
+    parameter PAUSE    = 4'd6;
+    parameter BACK_TRI = 4'd7;
+    parameter BACK     = 4'd8;
 
 //==== wire/reg declaration =============================
     // Output registers
@@ -42,27 +57,16 @@ module controller(
     reg  [3:0] stateTem_nxt;
 
     // DISTANCE-RELATED
-    reg [31:0] length_cur;
-    reg [31:0] length_nxt;
-    reg [31:0] segment_cur;
-    reg [31:0] segment_nxt;
-    reg [31:0] location_cur;  // location of start point
-    reg [31:0] location_nxt;
+    reg [DisLen:0] length_cur;
+    reg [DisLen:0] length_nxt;
+    reg [DisLen:0] segment_cur;
+    reg [DisLen:0] segment_nxt;
+    reg [DisLen:0] location_cur;  // location of start point
+    reg [DisLen:0] location_nxt;
 
     // CUT-counter
     reg  [4:0] counter;
     reg  [4:0] counter_nxt;
-
-//==== Parameter declaration ============================
-    parameter IDLE     = 4'd0;
-    parameter INIT_TRI = 4'd1;
-    parameter INIT_MEA = 4'd2;
-    parameter TRIGGER  = 4'd3;
-    parameter MEASURE  = 4'd4;
-    parameter CUT      = 4'd5;
-    parameter PAUSE    = 4'd6;
-    parameter BACK_TRI = 4'd7;
-    parameter BACK     = 4'd8;
 
 //==== combinational circuit ============================
     assign trigger = trigger_cur;
@@ -170,17 +174,20 @@ module controller(
     always @ ( * ) begin
         if(state_cur == INIT_MEA && ~pause && valid) begin
             if (slice_num[4] == 1'b1)begin
-                segment_nxt = {4'b0000,distance[31:4]};
+                segment_nxt = {4'b0000,distance[DisLen:4]};
                 end
             else if (slice_num[3] == 1'b1)begin
-                segment_nxt = {3'b000,distance[31:3]};
+                segment_nxt = {3'b000,distance[DisLen:3]};
             end
             else if (slice_num[2] == 1'b1)begin
-                segment_nxt = {2'b00,distance[31:2]};
+                segment_nxt = {2'b00,distance[DisLen:2]};
             end
             else if (slice_num[1] == 1'b1)begin
-                segment_nxt = {1'b0,distance[31:1]};
+                segment_nxt = {1'b0,distance[DisLen:1]};
             end
+			else begin
+				segment_nxt = segment_cur;
+			end
         end
         else begin
             segment_nxt = segment_cur;
@@ -401,30 +408,30 @@ module controller(
     always @(posedge clk or negedge rst_n) begin
         // asynchronous reset
         if (~rst_n) begin
-            trigger_cur   <=  9'b0;
-            state_cur     <=  3'd0;
-            stateTem_cur  <=  3'd0;
-            move_cur      <=  1'b0;
-            cut_cur       <=  1'b0;
-            length_cur    <= 32'd0;
-            segment_cur   <= 32'd0;
-            location_cur  <= 32'd0;
-            counter       <=  5'd0;
-            finish_cur    <=  1'b0;
-            back_cur      <=  1'b0;
+            trigger_cur   <= 1'b0;
+            state_cur     <= 3'd0;
+            stateTem_cur  <= 3'd0;
+            move_cur      <= 1'b0;
+            cut_cur       <= 1'b0;
+            length_cur    <= {TotLen{1'b0}};
+            segment_cur   <= {TotLen{1'b0}};
+            location_cur  <= {TotLen{1'b0}};
+            counter       <= 5'd0;
+            finish_cur    <= 1'b0;
+            back_cur      <= 1'b0;
         end
         else begin
-            trigger_cur   <=  trigger_nxt;
-            state_cur     <=  state_nxt;
-            stateTem_cur  <=  stateTem_nxt;
-            move_cur      <=  move_nxt;
-            cut_cur       <=  cut_nxt;
-            length_cur    <=  length_nxt;
-            segment_cur   <=  segment_nxt;
-            location_cur  <=  location_nxt;
-            counter       <=  counter_nxt;
-            finish_cur    <=  finish_nxt;
-            back_cur      <=  back_nxt;
+            trigger_cur   <= trigger_nxt;
+            state_cur     <= state_nxt;
+            stateTem_cur  <= stateTem_nxt;
+            move_cur      <= move_nxt;
+            cut_cur       <= cut_nxt;
+            length_cur    <= length_nxt;
+            segment_cur   <= segment_nxt;
+            location_cur  <= location_nxt;
+            counter       <= counter_nxt;
+            finish_cur    <= finish_nxt;
+            back_cur      <= back_nxt;
         end
     end
 
