@@ -2,7 +2,7 @@ module slice_counter(
     input       clk,
     input       rst_n,
     input       slice_i,
-    output [4:0]slice_num_o // cut into how many pieces 0-16
+    output [4:0]slice_num_o // cut into how many pieces 0 2 4 8 16
 );
 
     reg [4:0] slice_num, nxt_slice_num;
@@ -10,13 +10,14 @@ module slice_counter(
     assign slice_num_o = slice_num;
     
     always@(*) begin
-		  if(slice_num == 5'd17) // can cut into 0-16 slices
-            nxt_slice_num = 0;			
-		  else
-        if(slice_i)
-            nxt_slice_num = slice_num + 1'b1;
-        else 
-            nxt_slice_num = slice_num;
+		  case({slice_i,slice_num})
+		  {1'b1,5'd0}: nxt_slice_num = 5'd2;
+		  {1'b1,5'd2}: nxt_slice_num = 5'd4;
+		  {1'b1,5'd4}: nxt_slice_num = 5'd8;
+		  {1'b1,5'd8}: nxt_slice_num = 5'd16;
+		  {1'b1,5'd16}: nxt_slice_num = 5'd0;
+		  default: nxt_slice_num = slice_num;
+		  endcase
     end
     
     always@(posedge clk or negedge rst_n) begin

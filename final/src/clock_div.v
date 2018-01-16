@@ -20,12 +20,12 @@ module clock_div#(
     
     // The constant that defines the clock speed. 
     // Since the system clock is 50MHZ, 
-    // define_speed = 50MHz/(2*desired_clock_frequency)
+    // define_speed = (2*desired_clock_frequency)/50MHz
     // localparam desired_clock_freq = 50Hz
-    localparam define_cycle = 2500000/define_speed;
+    localparam define_half_cycle = 25000*define_speed;
     
     // Count value that counts to define_speed
-    reg [32:0] count;
+    reg [31:0] count;
     
     always @ (posedge clk or negedge rst_n) begin
         // When rst is low set count and new_clk to 0
@@ -35,7 +35,7 @@ module clock_div#(
         end
         // When the count has reached the constant
         // reset count and toggle the output clock
-        else if (count == define_cycle)
+        else if (count == define_half_cycle)
         begin
             count   <= 32'b0;
             new_clk <= ~new_clk;

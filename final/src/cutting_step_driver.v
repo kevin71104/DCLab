@@ -31,11 +31,6 @@ module cutting_step_driver(
     // 1->2->3->4
 
     localparam sig0     = 4'b0;
-    // "One phase mode"
-    localparam sig1_1   = 4'b0001;
-    localparam sig2_1   = 4'b0010;
-    localparam sig3_1   = 4'b0100;
-    localparam sig4_1   = 4'b1000;
     // "Two phase mode"
     localparam sig1     = 4'b0011;
     localparam sig2     = 4'b0110;

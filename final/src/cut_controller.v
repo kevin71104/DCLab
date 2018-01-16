@@ -22,7 +22,7 @@ module cut_controller#(
     output  en_o,           // enable cut driver
     output  direction_o     // direction: 0 => clockwise, 1 => counterclockwise
 );
-    localparam define_clock = 2500000/define_speed;
+    localparam define_clock_cycle = 50000*define_speed;
     
     localparam STATE_CLKWISE    = 2'd0;
     localparam STATE_CNTCLKWISE = 2'd1;
@@ -33,7 +33,7 @@ module cut_controller#(
     reg         cut_end, nxt_cut_end;
     reg         en, nxt_en;
     reg         direction, nxt_direction;
-    reg [31:0]  clk_cnt, nxt_clk_cnt; // 0~define_clock, cnt how many clk cycles
+    reg [31:0]  clk_cnt, nxt_clk_cnt; // 0~define_clock_cycle, cnt how many clk cycles
     reg [6:0]   cnt, nxt_cnt; // 0~100 each cnt represents 0.9 degree
 
 //=================== FSM =====================  
@@ -85,7 +85,7 @@ module cut_controller#(
     assign direction_o  = direction;
     
     always@(*) begin
-        if(clk_cnt == define_clock)
+        if(clk_cnt == define_clock_cycle)
             nxt_clk_cnt  = 0;
         else
         if((state == STATE_CLKWISE || state == STATE_CNTCLKWISE) && cut_i) 
@@ -95,10 +95,10 @@ module cut_controller#(
     end
     
     always@(*) begin
-        if(cnt == 7'd100)
+        if(cnt == 7'd100)  // 90 / 0.9 = 100
             nxt_cnt  = 0;
         else
-        if(clk_cnt == define_clock) 
+        if(clk_cnt == define_clock_cycle) 
             nxt_cnt  = cnt + 1'b1;
         else 
             nxt_cnt  = cnt;   

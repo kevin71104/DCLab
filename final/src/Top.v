@@ -18,7 +18,10 @@ module Top#(
     output      move_signal_o,
     
     // I/O with cut motor
-    output      cut_signal_o
+    output      cut_signal_o,
+    
+    // for testing HSCR functionality
+    output [31:0]     distance_o
 );
 
     wire        valid;
@@ -34,8 +37,10 @@ module Top#(
     wire        new_clk0;
     
     wire        new_clk1;
+    
+    assign distance_o = distance;
 
-   controller controller(
+    controller controller(
         .clk        (clk),
 		.rst_n      (rst_n),
 		.start      (start_i),

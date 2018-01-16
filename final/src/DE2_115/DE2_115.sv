@@ -164,6 +164,10 @@ mover_signal[3:0]:GPIO[]
     logic       slice;    
     logic [4:0] slice_num;
     logic       finish;
+    
+    
+    // for testing HSCR04
+    logic [31:0] distance;
 
 // ============ On Board FPGA =============
  
@@ -189,8 +193,8 @@ mover_signal[3:0]:GPIO[]
     
     // 7 segment displayer
 	SevenHexDecoder seven_dec0(
-        .clk        (CLOCK_50)
-        .rst_n      (KEY[0])
+        .clk        (CLOCK_50),
+        .rst_n      (KEY[0]),
         .start_i    (start),
         .pause_i    (pause),
         .slice_num_i(slice_num), // cut into how many pieces
@@ -202,7 +206,11 @@ mover_signal[3:0]:GPIO[]
         .HEX4_o     (HEX4),
         .HEX5_o     (HEX5),
         .HEX6_o     (HEX6),
-        .HEX7_o     (HEX7)
+        .HEX7_o     (HEX7),
+        
+        
+        // for testing HSCR04
+        .distance_i     (distance)
 	);
     
     Top #(
@@ -218,7 +226,10 @@ mover_signal[3:0]:GPIO[]
 		.echo_i         (GPIO[]),
 		.trigger_o      (GPIO[]),
 		.move_signal_o  (GPIO[]),
-		.cut_signal_o   (GPIO[])
+		.cut_signal_o   (GPIO[]),
+        
+        // for testing HSCR04
+        .distance_o     (distance)
 	);
     
 endmodule
