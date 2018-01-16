@@ -29,10 +29,9 @@ module cut_driver#(
 		.new_clk    (new_clk) 
     );
     
-    cutting_step_driver cutting_step_driver0#(
+    cutting_step_driver #(
         .define_speed(define_speed)
-    )
-    (
+    )cutting_step_driver0(
 		.clk        (new_clk),
 		.rst_n      (rst_n),
 		.en_i       (cut_i),
