@@ -6,7 +6,7 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
     input        rst_n;
     input        start;
     input        pause;      // after 2 pauses will start again
-    input  [4:0] slice_num;  // number of pieces
+    input  [4:0] slice_num;  // number of pieces (power of 2)
 
     // I/O with supersonic
     input        valid;
@@ -137,7 +137,7 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
                 end
             end
             PAUSE: begin
-                if (stateTem_cur == INIT_TRI || stateTem_cur == TRIGGER || stateTem_cur == BACK_TRI) begin
+                if (pause && (stateTem_cur == INIT_TRI || stateTem_cur == TRIGGER || stateTem_cur == BACK_TRI)) begin
                     trigger_nxt = 1'b1;
                 end
                 else begin
@@ -168,6 +168,27 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
         endcase
     end
 
+    // segment_nxt
+    always @ ( * ) begin
+        if(state_cur == INIT_MEA && ~pause && valid) begin
+            if (slice_num[4] == 1'b1)begin
+                segment_nxt = {4'b0000,distance[31:4]};
+                end
+            else if (slice_num[3] == 1'b1)begin
+                segment_nxt = {3'b000,distance[31:3]};
+            end
+            else if (slice_num[2] == 1'b1)begin
+                segment_nxt = {2'b00,distance[31:2]};
+            end
+            else if (slice_num[1] == 1'b1)begin
+                segment_nxt = {1'b0,distance[31:1]};
+            end
+        end
+        else begin
+            segment_nxt = segment_cur;
+        end
+    end
+
     // FSM
     always @ ( * ) begin
         state_nxt    = state_cur;
@@ -175,7 +196,6 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
         move_nxt     = 1'b0;
         cut_nxt      = 1'b0;
         length_nxt   = length_cur;
-        segment_nxt  = segment_cur;
         location_nxt = location_cur;
         counter_nxt  = counter;
         finish_nxt   = 1'b0;
@@ -216,7 +236,6 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
                     state_nxt = PAUSE;
                     stateTem_nxt = INIT_TRI;
                     length_nxt = length_cur;
-                    segment_nxt = segment_cur;
                     location_nxt = location_cur;
                 end
                 else begin
@@ -225,13 +244,12 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
                         state_nxt = TRIGGER;
                         length_nxt = distance;
                         // WARNING : CRITICAL PATH !!!!!!!!!!!!!!
-                        segment_nxt = distance / slice_num;
+                        //segment_nxt = distance / slice_num;
                         location_nxt = distance;
                     end
                     else begin
                         state_nxt = INIT_MEA;
                         length_nxt = length_cur;
-                        segment_nxt = segment_cur;
                         location_nxt = location_cur;
                     end
                 end
@@ -300,13 +318,13 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
                     if(cut_end) begin
                         cut_nxt = 1'b0;
                         location_nxt = location_cur - segment_cur;
-                        if(counter == slice_num) begin
+                        if(counter == slice_num - 1) begin
                             state_nxt = BACK_TRI;
                             counter_nxt = 5'd0;
                         end
                         else begin
                             state_nxt = TRIGGER;
-                            counter_nxt = counter + 1;
+                            counter_nxt = counter;
                         end
                     end
                     else begin

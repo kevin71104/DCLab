@@ -35,12 +35,13 @@ module test_controller;
 		.slice_num  (slice_num),
 		.valid      (valid),
 		.distance   (distance),
-		.triggerSuc (triggerSuc),
 		.trigger    (trigger),
+		.triggerSuc (triggerSuc),
 		.move       (move),
 		.cut_end    (cut_end),
 		.cut        (cut),
-        .finish     (finish)
+        .finish     (finish),
+		.back       (back)
 	);
 
 	// Dump waveform file
@@ -57,7 +58,7 @@ module test_controller;
 
 	// test_supersonic
 	initial begin
-        slice_num   = 5'd3;
+        slice_num   = 5'd4;
         pause       = 0;
 
         rst_n = 0;
@@ -89,20 +90,39 @@ module test_controller;
             #(`CYCLE*1);
             triggerSuc = 0;
 
-            #(`CYCLE*2.5);
+			// test pause
+            #(`CYCLE*2);
             pause   = 1;
-			#(`CYCLE*10);
+			#(`CYCLE*1);
 			pause = 0;
 			#(`CYCLE*2);
             pause = 1;
 			#(`CYCLE*1);
             pause = 0;
-        end
-        trigger_supersonic(32'd600);
 
+			#(`CYCLE*2);
+            triggerSuc = 1;
+            #(`CYCLE*1);
+            triggerSuc = 0;
+            #(`CYCLE*10);
+            valid   = 1;
+            distance= 600;
+			#(`CYCLE*1);
+            valid = 0;
+
+			//trigger cut
+			#(`CYCLE*10);
+            cut_end = 1'd1;
+            #(`CYCLE*1);
+            cut_end = 1'd0;
+        end
+
+        trigger_supersonic(32'd500);
+
+        trigger_supersonic(32'd350);
         trigger_cut;
-        trigger_supersonic(32'd450);
-        trigger_supersonic(32'd280);
+
+		trigger_supersonic(32'd200);
         trigger_cut;
 
 		trigger_supersonic(32'd500);
@@ -140,7 +160,7 @@ module test_controller;
     endtask
 
     task trigger_cut;
-        @(cut) begin
+        @(posedge cut) begin
             #(`CYCLE*10);
             cut_end = 1'd1;
             #(`CYCLE*1);
