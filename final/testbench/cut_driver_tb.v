@@ -32,7 +32,7 @@ module test_cut_controller_driver;
 
 	// Dump waveform file
 	initial begin
-		$dumpfile("cut_controller_driver.vcd");
+		$dumpfile("cut_driver.vcd");
 		$dumpvars;			
 	end
 	

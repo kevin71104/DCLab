@@ -15,19 +15,19 @@ module Top#(
     output      trigger_o,
     
     // I/O with move motor
-    output      move_signal_o,
+    output [3:0]  move_signal_o,
     
     // I/O with cut motor
-    output      cut_signal_o,
+    output [3:0]  cut_signal_o,
     
     // for testing
-    output [31:0]     distance_o,
+    output [16:0]     distance_o,
 	output	move_o,
 	output	cut_o
 );
 
     wire        valid;
-    wire [31:0] distance;
+    wire [16:0] distance;
     wire        triggerSuc;
     wire        move;
     wire        back;

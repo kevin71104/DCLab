@@ -1,17 +1,16 @@
 `timescale 1ns/100ps
 `define CYCLE  20.0
 `define H_CYCLE (`CYCLE/2)
+`include   "../src/Top.v"
 `include   "../src/controller.v"
 `include   "../src/supersonic.v"
-`include   "../src/cut_controller.v"
-`include   "../src/cutting_step_driver.v"
-`include   "../src/clock_div.v"
+`include   "../src/cut_driver.v"
 `include   "../src/slice_counter.v"
-`include   "../src/track_step_driver.v"
+`include   "../src/track_driver.v"
 
 module test_Top;
 
-    localparam define_speed = 100000; // ms
+    localparam define_speed = 0.0002; // ms
 
 /*=============== reg/wire declaration =============*/	
     reg         clk;
@@ -24,13 +23,13 @@ module test_Top;
     
     // I/O with supersonic
     reg   echo_i;
-    wire  trigger_o,
+    wire  trigger_o;
     
     // I/O with move motor
-    wire  move_signal_o;
+    wire [3:0]  move_signal_o;
     
     // I/O with cut motor
-    wire  cut_signal_o;
+    wire [3:0]  cut_signal_o;
 
 /*================ module instantiation ================*/
 
@@ -61,6 +60,9 @@ module test_Top;
         clk = 1'b0;
         forever #(`H_CYCLE) clk = ~clk;
     end
+    
+    
+    reg [31:0] cnt;
 
 	// test_Top
 	initial begin               
@@ -69,13 +71,58 @@ module test_Top;
 		rst_n = 1;		
         #(`CYCLE*2); 
         
+        // slice_num = 4
+        slice;
+        slice;
+        start;
         
-        
-     
+        // test
+        trigger;
+        echo(900);    
         
         @(finish_o) $display("\nfinish\n");
 		$finish;
 	end
+    
+    task slice;
+    begin
+        slice_i = 1; 	
+        #(`CYCLE*1);
+        slice_i = 0;  
+    end
+    endtask
+    
+    
+    task start;
+    begin
+        start_i = 1; 	
+        #(`CYCLE*0.5);
+        start_i = 0;  
+    end        
+    endtask
+    
+    task trigger;
+    begin
+        cnt     = 0;
+        while(cnt!=32'd500)begin 
+            cnt = cnt + 1;
+            #(`CYCLE*1);        
+        end 
+    end
+    endtask
+    
+    task echo;
+        input [31:0] set_cycle;
+    begin
+        cnt     = 0;
+        echo_i  = 1;
+        while(cnt!=set_cycle) begin 
+            cnt = cnt + 1;
+            #(`CYCLE*1);        
+        end
+        echo_i  = 0;
+    end
+    endtask
     
     // abort if the design cannot halt
     initial begin

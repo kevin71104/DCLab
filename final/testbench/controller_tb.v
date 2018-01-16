@@ -1,6 +1,7 @@
 `timescale 1ns/100ps
 `define CYCLE  20.0
 `define H_CYCLE (`CYCLE/2)
+`include   "../src/controller.v"
 
 module test_controller;
 
@@ -13,7 +14,7 @@ module test_controller;
 
     // I/O with supersonic
     reg         valid;
-    reg  [31:0] distance;
+    reg  [16:0] distance;
     reg         triggerSuc;
     wire        trigger;
 

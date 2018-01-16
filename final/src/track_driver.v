@@ -23,9 +23,9 @@ module track_driver#(
 );
     wire new_clk;
     
-    clock_div #(
+    clock_div1 #(
         .define_speed(define_speed)
-    )clock_div0(
+    )clock_div1(
 		.clk        (clk),
 		.rst_n      (rst_n),
 		.new_clk    (new_clk) 
@@ -44,7 +44,7 @@ endmodule
 // Description: This is a clock divider. It takes the system clock 
 // and divides that down to a slower clock. It counts at the rate of the 
 // system clock to define_speed and toggles the output clock signal. 
-module clock_div#(
+module clock_div1#(
   parameter define_speed = 10 // Unit: ms 
 )
 (
