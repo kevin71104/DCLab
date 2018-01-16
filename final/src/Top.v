@@ -87,7 +87,7 @@ module Top#(
     )cut_driver0(
 		.clk        (clk),
 		.rst_n      (rst_n),
-		.cut_i      (cut),
+		.cut_i      (1'b1),
 		.cut_end_o  (cut_end),
         .signal_o   (cut_signal_o)
     );
@@ -98,7 +98,7 @@ module Top#(
     )track_driver0(
 		.clk        (clk),
 		.rst_n      (rst_n),
-		.move_i     (move),
+		.move_i     (1'b1),
 		.back_i     (back),
         .signal_o   (move_signal_o)
     );

@@ -21,7 +21,9 @@ module SevenHexDecoder(
     input     [31:0]   distance_i,
 	 input move_i,
 	 input cut_i,
-	 input [3:0] state_i
+	 input [3:0] state_i,
+	 input [3:0] cut_signal_i,
+	 input [3:0] move_signal_i
 );
 	/* The layout of seven segment display, 1: dark
 	 *    00
@@ -107,6 +109,12 @@ module SevenHexDecoder(
 			4'd7: begin HEX7_o = D0; HEX6_o = D7; end
 			4'd8: begin HEX7_o = D0; HEX6_o = D8; end
 			4'd9: begin HEX7_o = D0; HEX6_o = D9; end
+			4'd10: begin HEX7_o = D0; HEX6_o = D4; end
+			4'd11: begin HEX7_o = D0; HEX6_o = D5; end
+			4'd12: begin HEX7_o = D0; HEX6_o = D6; end
+			4'd13: begin HEX7_o = D0; HEX6_o = D7; end
+			4'd14: begin HEX7_o = D0; HEX6_o = D8; end
+			4'd15: begin HEX7_o = D0; HEX6_o = D9; end
 //			2'b00: begin HEX7_o = D0; HEX6_o = D0; end
 //			2'b01: begin HEX7_o = D0; HEX6_o = D1; end
 //			2'b10: begin HEX7_o = D1; HEX6_o = D0; end

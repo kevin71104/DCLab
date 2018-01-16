@@ -156,7 +156,7 @@ cut_signal[3:0] : GPIO[]
 mover_signal[3:0]:GPIO[]
 */
 
-    localparam define_speed = 10;
+    localparam define_speed = 1000;//ms
     
 //=========== wire declaration ============
     logic       start;
@@ -170,6 +170,8 @@ mover_signal[3:0]:GPIO[]
 	 logic move;
 	 logic cut;
 	 logic [3:0] state;
+	 logic [3:0] cut_signal;
+	 logic [3:0] movet_signal;
 
 // ============ On Board FPGA =============
  
@@ -214,7 +216,9 @@ mover_signal[3:0]:GPIO[]
         .distance_i     (distance),
 		  .move_i 	(move),
 		  .cut_i(cut),
-		  .state_i (state)
+		  .state_i (state),
+		  .cut_signal_i(cut_signal),
+		  .move_signal_i(move_signal)
 	);
     
     Top #(
@@ -227,10 +231,10 @@ mover_signal[3:0]:GPIO[]
 		.slice_i        (slice),
 		.slice_num_o    (slice_num),
 		.finish_o       (finish),
-		.echo_i         (GPIO[6]),
-		.trigger_o      (GPIO[7]),
-		.move_signal_o  (),
-		.cut_signal_o   (), //{GPIO[21],GPIO[19],GPIO[20],GPIO[18]})
+		.echo_i         (),
+		.trigger_o      (),
+		.move_signal_o  ({GPIO[34],GPIO[35],GPIO[33],GPIO[32]}),
+		// .cut_signal_o   ({GPIO[0],GPIO[1],GPIO[2],GPIO[3]}), 
         
         // for testing 
         .distance_o     (distance),
@@ -239,6 +243,6 @@ mover_signal[3:0]:GPIO[]
 		  .state_o(state)
 	);
 	
-	assign GPIO[21:18] = 1;
-    
+//	assign GPIO[35:0] = 36'hfffffffff;
+    assign GPIO[31:30] = 2'b11;
 endmodule

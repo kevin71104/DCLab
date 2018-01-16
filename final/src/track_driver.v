@@ -107,67 +107,49 @@ module track_step_driver(
     // counter-clockwise
     // sig4 -> sig3 -> sig2 -> sig1
     
-    localparam sig0     = 4'b0;
     // "Two phase mode"
-    localparam sig1     = 4'b0111;
-    localparam sig2     = 4'b1011;
-    localparam sig3     = 4'b1101;
-    localparam sig4     = 4'b1110;
+    localparam pos     = 4'b0101;
+    localparam neg     = 4'b1010;
+    localparam stop    = 4'b0000;
 
 // =========== Finite State Machine ============
     reg [3:0] curr_state, next_state;
  
     always @ (posedge clk or negedge rst_n) begin
         if (!rst_n)
-            curr_state <= sig0;
+            curr_state <= stop;
         else 
             curr_state <= next_state;
     end
 
     always @ (*) begin
         case(curr_state)
-        sig0: begin
-            if (en == 1'b1)
-                next_state = sig1;
-            else 
-                next_state = sig0;
-        end 
-        sig1: begin
+        stop: begin
             if (direction == 1'b0 && en == 1'b1)
-                next_state = sig2;
+                next_state = pos;
             else if (direction == 1'b1 && en == 1'b1)
-                next_state = sig4;
+                next_state = neg;
             else 
-                next_state = sig0;
+                next_state = stop;
+        end 
+        pos: begin
+            if (direction == 1'b0 && en == 1'b1)
+                next_state = pos;
+            else if (direction == 1'b1 && en == 1'b1)
+                next_state = neg;
+            else 
+                next_state = pos;
         end
-        sig2: begin
+        neg: begin
             if (direction == 1'b0 && en == 1'b1)
-                next_state = sig3;
+                next_state = pos;
             else if (direction == 1'b1 && en == 1'b1)
-                next_state = sig1;
+                next_state = neg;
             else 
-                next_state = sig0;
+                next_state = neg;
         end 
-        sig3: begin
-            if (direction == 1'b0 && en == 1'b1)
-                next_state = sig4;
-            else if (direction == 1'b1 && en == 1'b1)
-                next_state = sig2;
-            else 
-                next_state = sig0;
-        end 
-        // If the state is sig4, the state where
-        // the fourth signal is held high.
-        sig4: begin
-            if (direction == 1'b0 && en == 1'b1)
-                next_state = sig1;
-            else if (direction == 1'b1 && en == 1'b1)
-                next_state = sig3;
-            else 
-                next_state = sig0;
-        end  
         default:
-            next_state = sig0; 
+            next_state = stop; 
         endcase
     end 
     
@@ -177,19 +159,13 @@ module track_step_driver(
     // value.     
     always @ (posedge clk or negedge rst_n) begin
         if(!rst_n)
-            signal <= sig0;        
-        else if (curr_state == sig4)
-            signal <= sig4;
-            // signal = 4'b1000;
-        else if (curr_state == sig3)
-            signal <= sig3;
-            // signal = 4'b0100;
-        else if (curr_state == sig2)
-            signal <= sig2;          
-            // signal = 4'b0010;
-        else if (curr_state == sig1)
-            signal <= sig1;
-            // signal = 4'b0001;
+            signal <= 0;        
+        else if (curr_state == stop)
+            signal <= stop;
+        else if (curr_state == pos)
+            signal <= pos;
+        else if (curr_state == neg)
+            signal <= neg;       
         else
             signal <= 0;
     end
