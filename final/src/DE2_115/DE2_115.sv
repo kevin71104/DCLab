@@ -9,6 +9,8 @@ module DE2_115(
 	output [17:0] LEDR,
 	input [3:0] KEY,
 	input [17:0] SW,
+    
+    // 7-segment
 	output [6:0] HEX0,
 	output [6:0] HEX1,
 	output [6:0] HEX2,
@@ -17,12 +19,16 @@ module DE2_115(
 	output [6:0] HEX5,
 	output [6:0] HEX6,
 	output [6:0] HEX7,
-	output LCD_BLON,
+    
+    // LCD
+	output LCD_BLON, // don't use!
 	inout [7:0] LCD_DATA,
 	output LCD_EN,
 	output LCD_ON,
 	output LCD_RS,
 	output LCD_RW,
+    
+    
 	output UART_CTS,
 	input UART_RTS,
 	input UART_RXD,
@@ -135,35 +141,29 @@ module DE2_115(
 	output [16:0] HSMC_TX_D_P,
 	inout [6:0] EX_IO
 );
-//=========== wire declaration ============
+/*============= PIN Assignment ============
+rst_n: KEY[0]
+start: KEY[1]
+pause: KEY[2]
+slice: KEY[3]
+
+HSCR04
+trigger : GPIO[]
+echo    : GPIO[]
+
+Step Motor
+cut_signal[3:0] : GPIO[]
+mover_signal[3:0]:GPIO[]
+*/
+
     localparam define_speed = 10;
     
-    // KEY[1] KEY[2]
+//=========== wire declaration ============
     logic       start;
-    logic       pause;
-    
-    // slice_counter
-    logic       slice;
+    logic       pause; 
+    logic       slice;    
     logic [4:0] slice_num;
-    
-    // controller 
-    logic           trigger;
-    logic           valid;
-    logic           triggerSuc;
-    logic [31:0]    distance;
-    logic           finish;
-    logic           cut;
-    logic           cut_end;
-    logic           move;
-    logic           back;
-    
-    // cut
-    logic   new_clk0;
-    logic   en_cut;
-    logic   direction_cut;
-    
-    // move
-    logic   new_clk1;
+    logic       finish;
 
 // ============ On Board FPGA =============
  
@@ -204,87 +204,21 @@ module DE2_115(
         .HEX6_o     (HEX6),
         .HEX7_o     (HEX7)
 	);
-
-//========== FPGA Logic Design =============
-   
-    controller controller(
-        .clk        (CLOCK_50),
-		.rst_n      (KEY[0]),
-		.start      (start),
-		.pause      (pause),
-		.slice_num  (slice_num),
-		.valid      (valid),
-		.distance   (distance),
-		.triggerSuc (triggerSuc),
-		.trigger    (trigger),
-		.move       (move),
-        .back       (back),
-		.cut_end    (cut_end),
-		.cut        (cut),
-        .finish     (finish)
-    )
     
-    supersonic supersonic0(
-		.clk        (CLOCK_50),
-		.rst_n      (KEY[0]),
-		.echo       (),
-		.valid      (valid),
-		.distance   (distance),
-        .triggerSuc (triggerSuc),
-		.trigger    (trigger)
+    Top #(
+        .define_speed(define_speed)
+    )DUT (
+		.clk            (CLOCK_50),
+		.rst_n          (KEY[0]),
+		.start_i        (start),
+		.pause_i        (pause),
+		.slice_i        (slice),
+		.slice_num_o    (slice_num),
+		.finish_o       (finish),
+		.echo_i         (GPIO[]),
+		.trigger_o      (GPIO[]),
+		.move_signal_o  (GPIO[]),
+		.cut_signal_o   (GPIO[])
 	);
-
-    // cut
-    cut_controller #(
-        .define_speed(define_speed)
-    )cut_controller0(
-		.clk        (CLOCK_50),
-		.rst_n      (KEY[0]),
-		.cut_i      (cut),
-		.cut_end_o  (cut_end),
-		.en_o       (en_cut),
-        .direction_o(direction_cut)
-    );
-    
-    clock_div #(
-        .define_speed(define_speed)
-    )clock_div0(
-		.clk        (CLOCK_50),
-		.rst_n      (KEY[0]),
-		.new_clk    (new_clk0) 
-    );
-    
-    track_step_driver cutting_step_driver0(
-		.clk        (new_clk0),
-		.rst_n      (KEY[0]),
-		.en         (en_cut),
-		.direction  (direction_cut), 
-		.signal     ()
-    );
-    
-    slice_counter slice_counter0(
-        .clk        (CLOCK_50),
-        .rst_n      (KEY[0]),
-        .slice_i    (slice),
-        .slice_num_o(slice_num) 
-    )
-    
-    // move
-    clock_div #(
-        .define_speed(define_speed)
-    )clock_div1(
-		.clk        (CLOCK_50),
-		.rst_n      (KEY[0]),
-		.new_clk    (new_clk1) 
-    );
-    
-    track_step_driver track_step_driver0(
-		.clk        (new_clk1),
-		.rst_n      (KEY[0]),
-		.en         (move),
-		.direction  (back), 
-		.signal     ()
-    );
-
     
 endmodule
