@@ -1,5 +1,5 @@
 module controller(
-    input        clk;
+    input        clk,
     input        rst_n,
     input        start,
     input        pause,      // after 2 pauses will start again
