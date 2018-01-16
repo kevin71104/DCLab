@@ -29,7 +29,10 @@ module cut_driver#(
 		.new_clk    (new_clk) 
     );
     
-    cutting_step_driver cutting_step_driver0(
+    cutting_step_driver cutting_step_driver0#(
+        .define_speed(define_speed)
+    )
+    (
 		.clk        (new_clk),
 		.rst_n      (rst_n),
 		.en_i       (cut_i),
@@ -103,8 +106,7 @@ module cutting_step_driver#(
     output  [3:0] signal_o
     );
     
-    // localparam define_clock_cycle = 50000*define_speed;    
-    localparam define_clock_cycle = 5*define_speed;   
+    localparam define_clock_cycle = 50000*define_speed;
     
     // 4  3  2 1 -th bit
     // B' A' B A
