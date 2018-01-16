@@ -169,6 +169,7 @@ mover_signal[3:0]:GPIO[]
     logic [31:0] distance;
 	 logic move;
 	 logic cut;
+	 logic [3:0] state;
 
 // ============ On Board FPGA =============
  
@@ -212,7 +213,8 @@ mover_signal[3:0]:GPIO[]
         // for testing 
         .distance_i     (distance),
 		  .move_i 	(move),
-		  .cut_i(cut)
+		  .cut_i(cut),
+		  .state_i (state)
 	);
     
     Top #(
@@ -228,12 +230,15 @@ mover_signal[3:0]:GPIO[]
 		.echo_i         (GPIO[6]),
 		.trigger_o      (GPIO[7]),
 		.move_signal_o  (),
-		.cut_signal_o   ({GPIO[19],GPIO[17],GPIO[18],GPIO[16]}), 
+		.cut_signal_o   (), //{GPIO[21],GPIO[19],GPIO[20],GPIO[18]})
         
         // for testing 
         .distance_o     (distance),
 		  .move_o(move),
-		  .cut_o(cut)
+		  .cut_o(cut),
+		  .state_o(state)
 	);
+	
+	assign GPIO[21:18] = 1;
     
 endmodule

@@ -115,11 +115,15 @@ module cutting_step_driver#(
     // 1->2->3->4
     localparam sig0     = 4'b0;
     // "Two phase mode"
-    localparam sig1     = 4'b0011; // 3
-    localparam sig2     = 4'b0110; // 6
-    localparam sig3     = 4'b1100; // 12
-    localparam sig4     = 4'b1001; // 9
+    // localparam sig1     = 4'b0011; // 3
+    // localparam sig2     = 4'b0110; // 6
+    // localparam sig3     = 4'b1100; // 12
+    // localparam sig4     = 4'b1001; // 9
     
+	 localparam sig1     = 4'b0001; // 3
+    localparam sig2     = 4'b0010; // 6
+    localparam sig3     = 4'b0100; // 12
+    localparam sig4     = 4'b1000; // 9
     
     reg [3:0]   state, nxt_state;
 

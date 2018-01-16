@@ -1,5 +1,5 @@
 module Top#(
-    parameter  define_speed = 100 //ms
+    parameter  define_speed = 10000 //ms
 
 )(
     input       clk,
@@ -23,7 +23,8 @@ module Top#(
     // for testing
     output [16:0]     distance_o,
 	output	move_o,
-	output	cut_o
+	output	cut_o,
+	output [3:0] state_o
 );
 
     wire        valid;
@@ -36,8 +37,7 @@ module Top#(
     
     wire        en_cut;
     wire        direction_cut;
-    wire        new_clk0;
-    
+    wire        new_clk0;    
     wire        new_clk1;
     
     assign distance_o = distance;
@@ -58,7 +58,10 @@ module Top#(
         .back       (back),
 		.cut_end    (cut_end),
 		.cut        (cut),
-        .finish     (finish_o)
+        .finish     (finish_o),
+		  
+		  // for testing!!!!!!!!!!!!!!!!!
+		  .state_o	(state_o)
     );
     
     supersonic supersonic0(

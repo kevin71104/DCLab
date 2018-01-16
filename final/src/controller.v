@@ -23,7 +23,10 @@ module controller#(
     input        cut_end,
     output       cut,
 
-    output       finish
+    output       finish,
+	 
+	 //for testing !!!!!!!!!!
+	 output	[3:0]state_o
 );
 
 //==== Parameter declaration ============================
@@ -69,6 +72,11 @@ module controller#(
     reg  [4:0] counter_nxt;
 
 //==== combinational circuit ============================
+
+    // for testing!!!!!!!!!!!!!!!!!1
+	 assign state_o = state_cur;
+
+
     assign trigger = trigger_cur;
     assign move = move_cur;
     assign cut = cut_cur;

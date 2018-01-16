@@ -87,8 +87,7 @@ module clock_div1#(
 endmodule
 
 // Description: This is the state machine that drives
-// the output to the PmodSTEP. It alternates one of four pins being
-// high at a rate set by the clock divider. 
+// the output to the LEGO motor.  
 module track_step_driver(
     input clk,                  // clk from clock driver
     input rst_n,
@@ -104,16 +103,16 @@ module track_step_driver(
     // 1 2 3 4 -th bit
     // A B A'B'
     // clockwise
-    // 4->3->2->1
+    // sig1 -> sig2 -> sig3 -> sig4
     // counter-clockwise
-    // 1->2->3->4
-
+    // sig4 -> sig3 -> sig2 -> sig1
+    
     localparam sig0     = 4'b0;
     // "Two phase mode"
-    localparam sig1     = 4'b0011;
-    localparam sig2     = 4'b0110;
-    localparam sig3     = 4'b1100;
-    localparam sig4     = 4'b1001;
+    localparam sig1     = 4'b0111;
+    localparam sig2     = 4'b1011;
+    localparam sig3     = 4'b1101;
+    localparam sig4     = 4'b1110;
 
 // =========== Finite State Machine ============
     reg [3:0] curr_state, next_state;
@@ -135,25 +134,25 @@ module track_step_driver(
         end 
         sig1: begin
             if (direction == 1'b0 && en == 1'b1)
-                next_state = sig4;
-            else if (direction == 1'b1 && en == 1'b1)
                 next_state = sig2;
+            else if (direction == 1'b1 && en == 1'b1)
+                next_state = sig4;
             else 
                 next_state = sig0;
         end
         sig2: begin
             if (direction == 1'b0 && en == 1'b1)
-                next_state = sig1;
-            else if (direction == 1'b1 && en == 1'b1)
                 next_state = sig3;
+            else if (direction == 1'b1 && en == 1'b1)
+                next_state = sig1;
             else 
                 next_state = sig0;
         end 
         sig3: begin
             if (direction == 1'b0 && en == 1'b1)
-                next_state = sig2;
-            else if (direction == 1'b1 && en == 1'b1)
                 next_state = sig4;
+            else if (direction == 1'b1 && en == 1'b1)
+                next_state = sig2;
             else 
                 next_state = sig0;
         end 
@@ -161,9 +160,9 @@ module track_step_driver(
         // the fourth signal is held high.
         sig4: begin
             if (direction == 1'b0 && en == 1'b1)
-                next_state = sig3;
-            else if (direction == 1'b1 && en == 1'b1)
                 next_state = sig1;
+            else if (direction == 1'b1 && en == 1'b1)
+                next_state = sig3;
             else 
                 next_state = sig0;
         end  
