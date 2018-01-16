@@ -55,11 +55,6 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
     reg  [4:0] counter;
     reg  [4:0] counter_nxt;
 
-    // PAUSE-counter
-    reg  [1:0] pause_counter;
-    reg  [1:0] pause_counter_nxt;
-    reg        prev_pause;
-    wire       prev_pause_nxt;
 //==== Parameter declaration ============================
     parameter IDLE     = 4'd0;
     parameter INIT_TRI = 4'd1;
@@ -77,7 +72,6 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
     assign cut = cut_cur;
     assign finish = finish_cur;
     assign back = back_cur;
-    assign prev_pause_nxt = pause;
 
     // trigger signal
     always @ ( * ) begin
@@ -143,8 +137,7 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
                 end
             end
             PAUSE: begin
-                if((pause ^ prev_pause) && (pause_counter == 2'd3) &&
-                 (stateTem_cur == INIT_TRI || stateTem_cur == TRIGGER || stateTem_cur == BACK_TRI)) begin
+                if (stateTem_cur == INIT_TRI || stateTem_cur == TRIGGER || stateTem_cur == BACK_TRI) begin
                     trigger_nxt = 1'b1;
                 end
                 else begin
@@ -189,14 +182,12 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
         back_nxt     = 1'b0;
         case(state_cur)
             IDLE: begin
-                if(pause ^ prev_pause) begin
+                if(pause) begin
                     state_nxt = PAUSE;
                     stateTem_nxt = IDLE;
-                    pause_counter_nxt = 2'd1;
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-                    pause_counter_nxt = 2'd0;
                     if(start) begin
                         state_nxt = INIT_TRI;
                     end
@@ -206,14 +197,12 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
                 end
             end
             INIT_TRI: begin
-                if (pause ^ prev_pause) begin
+                if (pause) begin
                     state_nxt = PAUSE;
                     stateTem_nxt = INIT_TRI;
-                    pause_counter_nxt = 2'd1;
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-                    pause_counter_nxt = 2'd0;
                     if(triggerSuc) begin
                         state_nxt = INIT_MEA;
                     end
@@ -223,17 +212,15 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
                 end
             end
             INIT_MEA: begin
-                if (pause ^ prev_pause) begin
+                if (pause) begin
                     state_nxt = PAUSE;
                     stateTem_nxt = INIT_TRI;
                     length_nxt = length_cur;
                     segment_nxt = segment_cur;
                     location_nxt = location_cur;
-                    pause_counter_nxt = 2'd1;
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-                    pause_counter_nxt = 2'd0;
                     if(valid) begin
                         state_nxt = TRIGGER;
                         length_nxt = distance;
@@ -250,15 +237,13 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
                 end
             end
             TRIGGER: begin
-                if (pause ^ prev_pause) begin
+                if (pause) begin
                     state_nxt = PAUSE;
                     stateTem_nxt = TRIGGER;
                     move_nxt = 1'b0;
-                    pause_counter_nxt = 2'd1;
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-                    pause_counter_nxt = 2'd0;
                     if(triggerSuc) begin
                         state_nxt = MEASURE;
                         move_nxt = 1'b1;
@@ -270,17 +255,15 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
                 end
             end
             MEASURE: begin
-                if (pause ^ prev_pause) begin
+                if (pause) begin
                     state_nxt = PAUSE;
                     stateTem_nxt = TRIGGER;
                     move_nxt = 1'b0;
                     cut_nxt = 1'b0;
                     counter_nxt = counter;
-                    pause_counter_nxt = 2'd1;
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-                    pause_counter_nxt = 2'd0;
                     if(valid) begin
                         if( distance <= location_cur - segment_cur)begin
                             // GO TO CUT
@@ -305,17 +288,15 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
                 end
             end
             CUT: begin
-                if (pause ^ prev_pause) begin
+                if (pause) begin
                     state_nxt = PAUSE;
                     stateTem_nxt = CUT;
                     cut_nxt = 1'b0;
                     counter_nxt = counter;
                     location_nxt = location_cur;
-                    pause_counter_nxt = 2'd1;
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-                    pause_counter_nxt = 2'd0;
                     if(cut_end) begin
                         cut_nxt = 1'b0;
                         location_nxt = location_cur - segment_cur;
@@ -337,32 +318,22 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
                 end
             end
             PAUSE: begin
-                if(pause ^ prev_pause) begin
-                    if(pause_counter == 2'd3) begin
-                        state_nxt = stateTem_cur;
-                        pause_counter_nxt = 2'd0;
-                    end
-                    else begin
-                        state_nxt = PAUSE;
-                        pause_counter_nxt = pause_counter + 1;
-                    end
+                if(pause) begin
+                    state_nxt = stateTem_cur;
                 end
                 else begin
                     state_nxt = PAUSE;
-                    pause_counter_nxt = pause_counter;
                 end
             end
             BACK_TRI: begin
-                if (pause ^ prev_pause) begin
+                if (pause) begin
                     state_nxt = PAUSE;
                     stateTem_nxt = BACK_TRI;
                     move_nxt = 1'b0;
                     back_nxt = 1'b0;
-                    pause_counter_nxt = 2'd1;
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-                    pause_counter_nxt = 2'd0;
                     if(triggerSuc) begin
                         state_nxt = BACK;
                         move_nxt = 1'b1;
@@ -376,17 +347,15 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
                 end
             end
             BACK: begin
-                if (pause ^ prev_pause) begin
+                if (pause) begin
                     state_nxt = PAUSE;
                     stateTem_nxt = BACK_TRI;
                     move_nxt = 1'b0;
                     back_nxt = 1'b0;
                     finish_nxt = 1'b0;
-                    pause_counter_nxt = 2'd1;
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-                    pause_counter_nxt = 2'd0;
                     if(valid) begin
                         if( distance >= length_cur)begin
                             move_nxt = 1'b0;
@@ -427,8 +396,6 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
             counter       <=  5'd0;
             finish_cur    <=  1'b0;
             back_cur      <=  1'b0;
-            pause_counter <=  2'd0;
-            prev_pause    <=  1'b0;
         end
         else begin
             trigger_cur   <=  trigger_nxt;
@@ -442,8 +409,6 @@ module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
             counter       <=  counter_nxt;
             finish_cur    <=  finish_nxt;
             back_cur      <=  back_nxt;
-            pause_counter <=  pause_counter_nxt;
-            prev_pause    <=  prev_pause_nxt;
         end
     end
 
