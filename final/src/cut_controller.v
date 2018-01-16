@@ -1,5 +1,14 @@
+// Team number: 5
+// Author: Frank Chuang
+//
+// Create Date: 01/14/2018
+// Project Name: Kitchen's helper
+// Module Name: cut_controller
+// Target Devices: DE2-115
+// Description: To controll cutting driver 
+
 module cut_controller#(
-    parameter define_speed = 10 // unit: ms
+    parameter define_speed = 10 // unit: ms, which means 10ms trun 0.9 degree
 )
 (
     input   clk,
@@ -11,7 +20,7 @@ module cut_controller#(
     
     // I/O with cut driver
     output  en_o,           // enable cut driver
-    output  direction_o    // direction: 0 => clockwise 1 => counterclockwise
+    output  direction_o     // direction: 0 => clockwise, 1 => counterclockwise
 );
     localparam define_clock = 2500000/define_speed;
     
@@ -24,7 +33,7 @@ module cut_controller#(
     reg         cut_end, nxt_cut_end;
     reg         en, nxt_en;
     reg         direction, nxt_direction;
-    reg [31:0]  clk_cnt, nxt_clk_cnt;
+    reg [31:0]  clk_cnt, nxt_clk_cnt; // 0~define_clock, cnt how many clk cycles
     reg [6:0]   cnt, nxt_cnt; // 0~100 each cnt represents 0.9 degree
 
 //=================== FSM =====================  

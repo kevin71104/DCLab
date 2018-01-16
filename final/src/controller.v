@@ -1,28 +1,26 @@
-module controller(clk, rst_n, start, pause, slice_num, valid, distance, trigger,
-                  triggerSuc, move, cut, cut_end, finish, back);
-
-//==== input/output declaration =========================
+module controller(
     input        clk;
-    input        rst_n;
-    input        start;
-    input        pause;      // after 2 pauses will start again
-    input  [4:0] slice_num;  // number of pieces (power of 2)
+    input        rst_n,
+    input        start,
+    input        pause,      // after 2 pauses will start again
+    input  [4:0] slice_num,  // number of pieces (power of 2)
 
     // I/O with supersonic
-    input        valid;
-    input [31:0] distance;
-    input        triggerSuc;
-    output       trigger;    // hold high for at least 10 us (500 cycles)
+    input        valid,
+    input [31:0] distance,
+    input        triggerSuc,
+    output       trigger,    // hold high for at least 10 us (500 cycles)
 
     // I/O with Move Controller
-    output       move;
+    output       move,
+    output       back,
 
     // I/O with Cut controller
-    input        cut_end;
-    output       cut;
+    input        cut_end,
+    output       cut,
 
-    output       finish;
-    output       back;
+    output       finish
+);
 
 //==== wire/reg declaration =============================
     // Output registers

@@ -33,7 +33,7 @@ module cut_controller_driver#(
 		.new_clk    (new_clk) 
     );
     
-    track_step_driver track_step_driver0(
+    cutting_step_driver cutting_step_driver0(
 		.clk        (new_clk),
 		.rst_n      (rst_n),
 		.en         (en),

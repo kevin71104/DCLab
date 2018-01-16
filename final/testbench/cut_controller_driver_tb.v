@@ -3,12 +3,12 @@
 `define H_CYCLE (`CYCLE/2)
 `include   "../src/cut_controller_driver.v"
 `include   "../src/cut_controller.v"
-`include   "../.backup/Stepper_Motor_Full_Step/clock_div.v"
-`include   "../.backup/Stepper_Motor_Full_Step/cutting_step_driver.v"
+`include   "../src/clock_div.v"
+`include   "../src/cutting_step_driver.v"
 
 module test_cut_controller_driver;
 
-    localparam define_speed = 10;
+    localparam define_speed = 100000; // ms
 
 /*=============== reg/wire declaration =============*/
 	reg         clk;
@@ -77,7 +77,7 @@ module test_cut_controller_driver;
     
     // abort if the design cannot halt
     initial begin
-        #(`CYCLE * 10000000 );
+        #(`CYCLE * 100000 );
         $display( "\n" );
         $display( "Your design doesn't finish all operations in reasonable interval." );
         $display( "Terminated at: ", $time, " ns" );
