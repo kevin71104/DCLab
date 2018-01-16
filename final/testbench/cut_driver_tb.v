@@ -1,14 +1,11 @@
 `timescale 1ns/100ps
 `define CYCLE  20.0
 `define H_CYCLE (`CYCLE/2)
-`include   "../src/cut_controller_driver.v"
-`include   "../src/cut_controller.v"
-`include   "../src/clock_div.v"
-`include   "../src/cutting_step_driver.v"
+`include   "../src/cut_driver.v"
 
 module test_cut_controller_driver;
 
-    localparam define_speed = 100000; // ms
+    localparam define_speed = 0.0002; // ms 200ns
 
 /*=============== reg/wire declaration =============*/
 	reg         clk;
@@ -23,7 +20,7 @@ module test_cut_controller_driver;
 
 /*================ module instantiation ================*/
 
-	cut_controller_driver #(
+	cut_driver #(
         .define_speed(define_speed)
     )DUT (
 		.clk        (clk),
@@ -54,21 +51,9 @@ module test_cut_controller_driver;
         
         // cut_i
         cut_i = 1;        	
-        #(`CYCLE*10000);
-        cut_i = 0;	
-        #(`CYCLE*10);
-        cut_i = 1;        	
-        #(`CYCLE*10000);
-        cut_i = 0;     	
-        #(`CYCLE*10);
-        cut_i = 1;        	
-        #(`CYCLE*10000);
-        cut_i = 0;     	
-        #(`CYCLE*10);
-        cut_i = 1;        	
-        #(`CYCLE*10000);
-        cut_i = 0;     	
-        #(`CYCLE*10);
+        #(`CYCLE*5);
+        cut_i = 0;  	
+        #(`CYCLE*2); 
         cut_i = 1;         
         
         @(cut_end_o) $display("\nfinish\n");
@@ -77,7 +62,7 @@ module test_cut_controller_driver;
     
     // abort if the design cannot halt
     initial begin
-        #(`CYCLE * 100000 );
+        #(`CYCLE * 1000000 );
         $display( "\n" );
         $display( "Your design doesn't finish all operations in reasonable interval." );
         $display( "Terminated at: ", $time, " ns" );

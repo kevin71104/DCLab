@@ -3,7 +3,7 @@ module SevenHexDecoder(
     input               rst_n,
     input               start_i,
     input               pause_i,
-	input [4:0]         slice_num_i, // 0~16
+	 input [4:0]         slice_num_i, // 0~16
     input               finish_i,
     // GO / PAUSE / DONE
 	output logic [6:0]  HEX0_o,
@@ -15,11 +15,12 @@ module SevenHexDecoder(
 	output logic [6:0]  HEX5_o,
     // 0~16
 	output logic [6:0]  HEX6_o,
-	output logic [6:0]  HEX7_o,
+	output logic [6:0]  HEX7_o,    
     
-    
-    // for testing HSCR04
-    input     [31:0]   distance_i
+    // for testing 
+    input     [31:0]   distance_i,
+	 input move_i,
+	 input cut_i
 );
 	/* The layout of seven segment display, 1: dark
 	 *    00
@@ -29,7 +30,7 @@ module SevenHexDecoder(
 	 *    33
 	 */
 	localparam DARK = 7'b1111111;
-    localparam D0   = 7'b1000000;
+   localparam D0   = 7'b1000000;
 	localparam D1   = 7'b1111001;
 	localparam D2   = 7'b0100100;
 	localparam D3   = 7'b0110000;
@@ -91,30 +92,58 @@ module SevenHexDecoder(
 			default: nxt_state = state;	
 		endcase
 	end
-
+	
 	always_comb begin
-		// case(slice_num_i)
-        case(distance_i[15:11])
-			5'd0: begin HEX7_o = D0; HEX6_o = D0; end
-			5'd1: begin HEX7_o = D0; HEX6_o = D1; end
-			5'd2: begin HEX7_o = D0; HEX6_o = D2; end
-			5'd3: begin HEX7_o = D0; HEX6_o = D3; end
-			5'd4: begin HEX7_o = D0; HEX6_o = D4; end
-			5'd5: begin HEX7_o = D0; HEX6_o = D5; end
-			5'd6: begin HEX7_o = D0; HEX6_o = D6; end
-			5'd7: begin HEX7_o = D0; HEX6_o = D7; end
-			5'd8: begin HEX7_o = D0; HEX6_o = D8; end
-			5'd9: begin HEX7_o = D0; HEX6_o = D9; end
-			5'd10: begin HEX7_o = D1; HEX6_o = D0; end
-			5'd11: begin HEX7_o = D1; HEX6_o = D1; end
-			5'd12: begin HEX7_o = D1; HEX6_o = D2; end
-			5'd13: begin HEX7_o = D1; HEX6_o = D3; end
-			5'd14: begin HEX7_o = D1; HEX6_o = D4; end
-			5'd15: begin HEX7_o = D1; HEX6_o = D5; end
-			5'd16: begin HEX7_o = D1; HEX6_o = D6; end
+//        case(distance_i[5+:5])
+		case({move_i,cut_i})
+			2'b00: begin HEX7_o = D0; HEX6_o = D0; end
+			2'b01: begin HEX7_o = D0; HEX6_o = D1; end
+			2'b10: begin HEX7_o = D1; HEX6_o = D0; end
+			2'b11: begin HEX7_o = D1; HEX6_o = D1; end
+//			
+//			5'd0: begin HEX7_o = D0; HEX6_o = D0; end
+//			5'd1: begin HEX7_o = D0; HEX6_o = D1; end
+//			5'd2: begin HEX7_o = D0; HEX6_o = D2; end
+//			5'd3: begin HEX7_o = D0; HEX6_o = D3; end
+//			5'd4: begin HEX7_o = D0; HEX6_o = D4; end
+//			5'd5: begin HEX7_o = D0; HEX6_o = D5; end
+//			5'd6: begin HEX7_o = D0; HEX6_o = D6; end
+//			5'd7: begin HEX7_o = D0; HEX6_o = D7; end
+//			5'd8: begin HEX7_o = D0; HEX6_o = D8; end
+//			5'd9: begin HEX7_o = D0; HEX6_o = D9; end
+//			5'd10: begin HEX7_o = D1; HEX6_o = D0; end
+//			5'd11: begin HEX7_o = D1; HEX6_o = D1; end
+//			5'd12: begin HEX7_o = D1; HEX6_o = D2; end
+//			5'd13: begin HEX7_o = D1; HEX6_o = D3; end
+//			5'd14: begin HEX7_o = D1; HEX6_o = D4; end
+//			5'd15: begin HEX7_o = D1; HEX6_o = D5; end
+//			5'd16: begin HEX7_o = D1; HEX6_o = D6; end
             default: begin HEX7_o = D0; HEX6_o = D0; end
 		endcase
 	end
+
+//	always_comb begin
+//		 case(slice_num_i)
+//			5'd0: begin HEX7_o = D0; HEX6_o = D0; end
+//			5'd1: begin HEX7_o = D0; HEX6_o = D1; end
+//			5'd2: begin HEX7_o = D0; HEX6_o = D2; end
+//			5'd3: begin HEX7_o = D0; HEX6_o = D3; end
+//			5'd4: begin HEX7_o = D0; HEX6_o = D4; end
+//			5'd5: begin HEX7_o = D0; HEX6_o = D5; end
+//			5'd6: begin HEX7_o = D0; HEX6_o = D6; end
+//			5'd7: begin HEX7_o = D0; HEX6_o = D7; end
+//			5'd8: begin HEX7_o = D0; HEX6_o = D8; end
+//			5'd9: begin HEX7_o = D0; HEX6_o = D9; end
+//			5'd10: begin HEX7_o = D1; HEX6_o = D0; end
+//			5'd11: begin HEX7_o = D1; HEX6_o = D1; end
+//			5'd12: begin HEX7_o = D1; HEX6_o = D2; end
+//			5'd13: begin HEX7_o = D1; HEX6_o = D3; end
+//			5'd14: begin HEX7_o = D1; HEX6_o = D4; end
+//			5'd15: begin HEX7_o = D1; HEX6_o = D5; end
+//			5'd16: begin HEX7_o = D1; HEX6_o = D6; end
+//            default: begin HEX7_o = D0; HEX6_o = D0; end
+//		endcase
+//	end
     
     assign HEX0_o = HEX0;
     assign HEX1_o = HEX1;

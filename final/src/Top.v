@@ -1,5 +1,5 @@
 module Top#(
-    parameter  define_speed = 10
+    parameter  define_speed = 100 //ms
 
 )(
     input       clk,
@@ -20,8 +20,10 @@ module Top#(
     // I/O with cut motor
     output      cut_signal_o,
     
-    // for testing HSCR functionality
-    output [31:0]     distance_o
+    // for testing
+    output [31:0]     distance_o,
+	output	move_o,
+	output	cut_o
 );
 
     wire        valid;
@@ -39,6 +41,8 @@ module Top#(
     wire        new_clk1;
     
     assign distance_o = distance;
+	assign move_o = move;
+	assign cut_o = cut;
 
     controller controller(
         .clk        (clk),
@@ -55,7 +59,7 @@ module Top#(
 		.cut_end    (cut_end),
 		.cut        (cut),
         .finish     (finish_o)
-    )
+    );
     
     supersonic supersonic0(
 		.clk        (clk),
@@ -73,51 +77,27 @@ module Top#(
         .rst_n      (rst_n),
         .slice_i    (slice_i),
         .slice_num_o(slice_num_o) 
-    )
+    );
     
-    cut_controller #(
+    cut_driver #(
         .define_speed(define_speed)
-    )cut_controller0(
+    )cut_driver0(
 		.clk        (clk),
 		.rst_n      (rst_n),
 		.cut_i      (cut),
 		.cut_end_o  (cut_end),
-		.en_o       (en_cut),
-        .direction_o(direction_cut)
+        .signal_o   (cut_signal_o)
     );
-    
-    clock_div #(
-        .define_speed(define_speed)
-    )clock_div0(
-		.clk        (clk),
-		.rst_n      (rst_n),
-		.new_clk    (new_clk0) 
-    );
-    
-    cutting_step_driver cutting_step_driver0(
-		.clk        (new_clk0),
-		.rst_n      (rst_n),
-		.en         (en_cut),
-		.direction  (direction_cut), 
-		.signal     (cut_signal_o)
-    );    
     
     // move
-    clock_div #(
+    track_driver #(
         .define_speed(define_speed)
-    )clock_div1(
+    )track_driver0(
 		.clk        (clk),
 		.rst_n      (rst_n),
-		.new_clk    (new_clk1) 
+		.move_i     (move),
+		.back_i     (back),
+        .signal_o   (move_signal_o)
     );
-    
-    track_step_driver track_step_driver0(
-		.clk        (new_clk1),
-		.rst_n      (rst_n),
-		.en         (move),
-		.direction  (back), 
-		.signal     (move_signal_o)
-    );
-
 
 endmodule

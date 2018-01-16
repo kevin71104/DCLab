@@ -7,11 +7,89 @@
 // Project Name: Kitchen's helper
 // Module Name: track_step_driver
 // Target Devices: DE2-115
+
+module track_driver#(
+    parameter define_speed = 10
+)(
+    input       clk,
+    input       rst_n,
+    
+    // I/O with controller
+    input       move_i,
+    input       back_i,
+    
+    // I/O with motor
+    output [3:0]signal_o
+);
+    wire new_clk;
+    
+    clock_div #(
+        .define_speed(define_speed)
+    )clock_div0(
+		.clk        (clk),
+		.rst_n      (rst_n),
+		.new_clk    (new_clk) 
+    );
+    
+    track_step_driver track_step_driver0(
+		.clk        (new_clk),
+		.rst_n      (rst_n),
+		.en         (move_i),
+		.direction  (back_i), 
+		.signal     (signal_o)
+    );
+endmodule
+
+
+// Description: This is a clock divider. It takes the system clock 
+// and divides that down to a slower clock. It counts at the rate of the 
+// system clock to define_speed and toggles the output clock signal. 
+module clock_div#(
+  parameter define_speed = 10 // Unit: ms 
+)
+(
+    input clk,
+    input rst_n,
+    output reg new_clk
+);
+    
+    // The constant that defines the clock speed. 
+    // Since the system clock is 50MHZ, 
+    // define_speed = (2*desired_clock_frequency)/50MHz
+    // localparam desired_clock_freq = 50Hz
+    localparam define_half_cycle = 25000*define_speed-1;
+    
+    // Count value that counts to define_speed
+    reg [31:0] count;
+    
+    always @ (posedge clk or negedge rst_n) begin
+        // When rst is low set count and new_clk to 0
+        if (!rst_n) begin 
+            count   <= 32'b0;   
+            new_clk <= 1'b0;            
+        end
+        // When the count has reached the constant
+        // reset count and toggle the output clock
+        else if (count == define_half_cycle)
+        begin
+            count   <= 32'b0;
+            new_clk <= ~new_clk;
+        end
+        // increment the clock and keep the output clock
+        // the same when the constant hasn't been reached        
+        else
+        begin
+            count   <= count + 1'b1;
+            new_clk <= new_clk;
+        end
+    end
+    
+endmodule
+
 // Description: This is the state machine that drives
 // the output to the PmodSTEP. It alternates one of four pins being
 // high at a rate set by the clock divider. 
-
-module cutting_step_driver(
+module track_step_driver(
     input clk,                  // clk from clock driver
     input rst_n,
     

@@ -164,10 +164,11 @@ mover_signal[3:0]:GPIO[]
     logic       slice;    
     logic [4:0] slice_num;
     logic       finish;
-    
-    
-    // for testing HSCR04
+        
+    // for testing 
     logic [31:0] distance;
+	 logic move;
+	 logic cut;
 
 // ============ On Board FPGA =============
  
@@ -206,11 +207,12 @@ mover_signal[3:0]:GPIO[]
         .HEX4_o     (HEX4),
         .HEX5_o     (HEX5),
         .HEX6_o     (HEX6),
-        .HEX7_o     (HEX7),
+        .HEX7_o     (HEX7),        
         
-        
-        // for testing HSCR04
-        .distance_i     (distance)
+        // for testing 
+        .distance_i     (distance),
+		  .move_i 	(move),
+		  .cut_i(cut)
 	);
     
     Top #(
@@ -223,13 +225,15 @@ mover_signal[3:0]:GPIO[]
 		.slice_i        (slice),
 		.slice_num_o    (slice_num),
 		.finish_o       (finish),
-		.echo_i         (GPIO[]),
-		.trigger_o      (GPIO[]),
-		.move_signal_o  (GPIO[]),
-		.cut_signal_o   (GPIO[]),
+		.echo_i         (GPIO[6]),
+		.trigger_o      (GPIO[7]),
+		.move_signal_o  (),
+		.cut_signal_o   ({GPIO[19],GPIO[17],GPIO[18],GPIO[16]}), 
         
-        // for testing HSCR04
-        .distance_o     (distance)
+        // for testing 
+        .distance_o     (distance),
+		  .move_o(move),
+		  .cut_o(cut)
 	);
     
 endmodule
