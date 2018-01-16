@@ -6,12 +6,12 @@
 // Create Date: 01/14/2018
 // Project Name: Kitchen's helper
 // Module Name: track_step_driver
-// Target Devices: DES-115
+// Target Devices: DE2-115
 // Description: This is the state machine that drives
 // the output to the PmodSTEP. It alternates one of four pins being
 // high at a rate set by the clock divider. 
 
-module track_step_driver(
+module cutting_step_driver(
     input rst_n,
     input direction,
     input clk,
@@ -136,7 +136,7 @@ module track_step_driver(
     // state value to the present state 
     // on the positive edge of clock
     // or reset. 
-    always @ (posedge clk, negedge rst_n) begin
+    always @ (posedge clk or negedge rst_n) begin
         if (rst_n == 1'b0)
             curr_state = sig0;
         else 

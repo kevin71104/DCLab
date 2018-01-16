@@ -24,6 +24,8 @@ module cut_controller#(
     reg         cut_end, nxt_cut_end;
     reg         en, nxt_en;
     reg         direction, nxt_direction;
+    reg [31:0]  clk_cnt, nxt_clk_cnt;
+    reg [6:0]   cnt, nxt_cnt; // 0~100 each cnt represents 0.9 degree
 
 //=================== FSM =====================  
   
@@ -40,19 +42,29 @@ module cut_controller#(
         case(state)
             STATE_CLKWISE: begin
                 nxt_direction   = 0;
-                nxt_cut_end     = 0;
+                nxt_cut_end     = 0;                
+                if(cnt == 7'd100) 
+                    nxt_state = STATE_CNTCLKWISE;
+                else 
+                    nxt_state = STATE_CLKWISE;
             end
             STATE_CNTCLKWISE: begin
                 nxt_direction   = 1;
-                nxt_cut_end     = 0;            
+                nxt_cut_end     = 0;       
+                if(cnt == 7'd100) 
+                    nxt_state = STATE_CUTEND;
+                else 
+                    nxt_state = STATE_CNTCLKWISE;           
             end
             STATE_CUTEND: begin
                 nxt_direction   = 0;
-                nxt_cut_end     = 1;            
+                nxt_cut_end     = 1;   
+                nxt_state       = STATE_CLKWISE;          
             end
             default: begin
                 nxt_direction   = 0;
-                nxt_cut_end     = 0;            
+                nxt_cut_end     = 0;   
+                nxt_state       = state;            
             end
         endcase
     end
@@ -62,6 +74,26 @@ module cut_controller#(
     assign cut_end_o    = cut_end;
     assign en_o         = en;
     assign direction_o  = direction;
+    
+    always@(*) begin
+        if(clk_cnt == define_clock)
+            nxt_clk_cnt  = 0;
+        else
+        if((state == STATE_CLKWISE || state == STATE_CNTCLKWISE) && cut_i) 
+            nxt_clk_cnt  = clk_cnt + 1'b1;
+        else 
+            nxt_clk_cnt  = clk_cnt;  
+    end
+    
+    always@(*) begin
+        if(cnt == 7'd100)
+            nxt_cnt  = 0;
+        else
+        if(clk_cnt == define_clock) 
+            nxt_cnt  = cnt + 1'b1;
+        else 
+            nxt_cnt  = cnt;   
+    end
     
     always@(*) begin
         if(cut_i) begin
@@ -79,11 +111,15 @@ module cut_controller#(
             cut_end     <= 0;
             en          <= 0;
             direction   <= 0;
+            clk_cnt     <= 0;
+            cnt         <= 0;
         end
         else begin
             cut_end     <= nxt_cut_end;
             en          <= nxt_en;
-            direction   <= nxt_direction;        
+            direction   <= nxt_direction;
+            clk_cnt     <= nxt_clk_cnt;
+            cnt         <= nxt_cnt;
         end    
     end   
 
