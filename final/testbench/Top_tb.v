@@ -78,7 +78,21 @@ module test_Top;
         
         // test
         trigger;
-        echo(900);    
+        echo(900);  
+        trigger;
+        echo(600);  
+        trigger;
+        echo(500);  
+        trigger;
+        echo(350);  
+        trigger;
+        echo(200);  
+        trigger;
+        echo(500);  
+        trigger;
+        echo(740);  
+        trigger;
+        echo(910);    
         
         @(finish_o) $display("\nfinish\n");
 		$finish;
@@ -105,22 +119,20 @@ module test_Top;
     begin
         cnt     = 0;
         while(cnt!=32'd500)begin 
-            cnt = cnt + 1;
-            #(`CYCLE*1);        
-        end 
+            @(posedge clk) begin
+                if(trigger_o) 
+                    cnt = cnt + 1;       
+            end 
+        end
     end
     endtask
     
     task echo;
         input [31:0] set_cycle;
     begin
-        cnt     = 0;
-        echo_i  = 1;
-        while(cnt!=set_cycle) begin 
-            cnt = cnt + 1;
-            #(`CYCLE*1);        
-        end
-        echo_i  = 0;
+        echo_i = 1;
+        #(`CYCLE*set_cycle);
+        echo_i = 0;
     end
     endtask
     
