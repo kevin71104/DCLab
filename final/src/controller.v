@@ -152,7 +152,10 @@ module controller#(
 
     // segment_nxt
     always @ ( * ) begin
-        if(state_cur == INIT_MEA && ~pause && valid) begin
+		if (pause) begin
+		    segment_nxt = segment_cur;
+		end
+        else if(state_cur == INIT_MEA && valid) begin
             if (slice_num[4] == 1'b1)begin
                 segment_nxt = {4'b0000,distance[DisLen:4]};
                 end
