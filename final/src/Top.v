@@ -116,8 +116,10 @@ module Top#(
     )track_driverA(
 		.clk        (clk),
 		.rst_n      (rst_n),
-		.move_i     (1'b0),
-		.back_i     (1'b1),
+		.move_i     (move),
+		.back_i     (back),
+		// .move_i     (1'b0),
+		// .back_i     (1'b1),
         .signal_o (move_signal_o)
     );
 
