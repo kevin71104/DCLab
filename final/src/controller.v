@@ -11,6 +11,7 @@ module controller#(
 
     // I/O with supersonic
     input            valid,
+	input            fail,   // not receive valid -> re-trigger
     input [DisLen:0] distance,
     input            triggerSuc,
     output           trigger,    // hold high for at least 10 us (500 cycles)
@@ -289,7 +290,12 @@ module controller#(
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-                    if(valid) begin
+					if (fail) begin
+						state_nxt = INIT_TRI;
+                        length_nxt = length_cur;
+                        location_nxt = location_cur;
+					end
+                    else if(valid) begin
                         state_nxt = TRIGGER;
                         length_nxt = distance;
                         // WARNING : CRITICAL PATH !!!!!!!!!!!!!!
@@ -331,7 +337,13 @@ module controller#(
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-                    if(valid) begin
+					if (fail) begin
+						move_nxt = 1'b0;
+                        cut_nxt = 1'b0;
+                        state_nxt = TRIGGER;
+                        counter_nxt = counter;
+					end
+                    else if(valid) begin
 						move_nxt = 1'b0;
                         if( distance <= location_cur - segment_cur)begin
                             // GO TO CUT
@@ -422,7 +434,13 @@ module controller#(
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-                    if(valid) begin
+					if(fail) begin
+						move_nxt = 1'b0;
+                        state_nxt = BACK_TRI;
+                        finish_nxt = 1'b0;
+                        back_nxt = 1'b0;
+					end
+                    else if(valid) begin
 						move_nxt = 1'b0;
 						back_nxt = 1'b0;
                         if( distance >= length_cur)begin 
