@@ -26,11 +26,11 @@ module controller#(
 
     output       finish,
 	 
-	 //for testing !!!!!!!!!!
-	 output	 [3:0]  state_o,
-	 output  [21:0] stable_cnt_o,
-	 output  [DisLen:0] location_o,
-	 output  smallornot_o
+    //for testing !!!!!!!!!!
+    output	 [3:0]  state_o,
+    output  [21:0] stable_cnt_o,
+    output  [DisLen:0] location_o,
+    output  smallornot_o
 );
 
 //==== Parameter declaration ============================
@@ -45,6 +45,7 @@ module controller#(
     localparam BACK     = 4'd8;
 	
 	localparam spacing  = 22'd2500000;
+	localparam triggerTime = 9'd500;
 
 //==== wire/reg declaration =============================
     // Output registers
@@ -73,13 +74,17 @@ module controller#(
     reg [DisLen:0] location_cur;  // location of start point
     reg [DisLen:0] location_nxt;
 
-    // CUT-counter
+    // CUT-Counter
     reg  [4:0] counter;
     reg  [4:0] counter_nxt;
 	
 	// Stable-counter : keep at least 50ms spacing -> 2500 cycles
 	reg [21:0] stable_counter;
     reg [21:0] stable_counter_nxt;
+	
+	// triggerTime-Counter
+	reg  [8:0] trigger_counter;
+	reg  [8:0] trigger_counter_nxt;
 
 //==== combinational circuit ============================
 
@@ -330,7 +335,7 @@ module controller#(
 				end
 				else begin
 					if (~triggerSuc) begin
-						if(stable_counter >= spacing) begin
+						if((stable_counter >= spacing) && (trigger_counter < 9'd500)) begin
 					    	trigger_nxt = 1'b1;
 					    end
 						else begin
@@ -348,7 +353,7 @@ module controller#(
 				end
 				else begin
 					if (~triggerSuc) begin
-						if(stable_counter >= spacing) begin
+						if((stable_counter >= spacing) && (trigger_counter < 9'd500))begin
 							trigger_nxt = 1'b1;
 						end
 						else begin
@@ -366,7 +371,7 @@ module controller#(
 				end
 				else begin
 					if (~triggerSuc) begin
-						if(stable_counter >= spacing) begin
+						if((stable_counter >= spacing) && (trigger_counter < 9'd500))begin
 							trigger_nxt = 1'b1;
 						end
 						else begin
@@ -470,42 +475,94 @@ module controller#(
 				default: stable_counter_nxt = 22'd0;
         endcase
 	end
+	
+	// trigger_counter
+	always @ ( * ) begin
+	    trigger_counter_nxt = 9'd0;
+        case(state_cur)
+            INIT_TRI: begin
+                if (pause) begin
+					trigger_counter_nxt = 9'd0;
+				end
+				else if (triggerSuc) begin
+                    trigger_counter_nxt = 9'd0;
+				end
+				else if (trigger) begin
+				    trigger_counter_nxt = trigger_counter + 9'd1;
+				end
+				else begin
+				    trigger_counter_nxt = 9'd0;
+				end
+            end
+            TRIGGER: begin
+                if (pause) begin
+					trigger_counter_nxt = 9'd0;
+				end
+				else if (triggerSuc) begin
+                    trigger_counter_nxt = 9'd0;
+				end
+				else if (trigger) begin
+				    trigger_counter_nxt = trigger_counter + 9'd1;
+				end
+				else begin
+				    trigger_counter_nxt = 9'd0;
+				end
+            end
+			BACK_TRI: begin
+                if (pause) begin
+					trigger_counter_nxt = 9'd0;
+				end
+				else if (triggerSuc) begin
+                    trigger_counter_nxt = 9'd0;
+				end
+				else if (trigger) begin
+				    trigger_counter_nxt = trigger_counter + 9'd1;
+				end
+				else begin
+				    trigger_counter_nxt = 9'd0;
+				end
+            end
+            default: trigger_counter_nxt = 9'd0;
+        endcase
+	end
 
 //==== synchronous circuit ==============================
     always @(posedge clk or negedge rst_n) begin
         // asynchronous reset
         if (~rst_n) begin
-            trigger_cur    <= 1'b0;
-            state_cur      <= 3'd0;
-            stateTem_cur   <= 3'd0;
-            move_cur       <= 1'b0;
-            cut_cur        <= 1'b0;
-				/*
+            trigger_cur     <= 1'b0;
+            state_cur       <= 3'd0;
+            stateTem_cur    <= 3'd0;
+            move_cur        <= 1'b0;
+            cut_cur         <= 1'b0;
+			/*
             length_cur     <= {TotLen{1'b0}};
             segment_cur    <= {TotLen{1'b0}};
             location_cur   <= {TotLen{1'b0}};
-				*/
-		    length_cur     <= 17'b0;
-            segment_cur    <= 17'b0;
-            location_cur   <= 17'b0;
-            counter        <= 5'd0;
-            finish_cur     <= 1'b0;
-            back_cur       <= 1'b0;
-			stable_counter <= 22'd0;
+			*/
+		    length_cur      <= 17'b0;
+            segment_cur     <= 17'b0;
+            location_cur    <= 17'b0;
+            counter         <= 5'd0;
+            finish_cur      <= 1'b0;
+            back_cur        <= 1'b0;
+			stable_counter  <= 22'd0;
+			trigger_counter <= 9'd0;
         end
         else begin
-            trigger_cur    <= trigger_nxt;
-            state_cur      <= state_nxt;
-            stateTem_cur   <= stateTem_nxt;
-            move_cur       <= move_nxt;
-            cut_cur        <= cut_nxt;
-            length_cur     <= length_nxt;
-            segment_cur    <= segment_nxt;
-            location_cur   <= location_nxt;
-            counter        <= counter_nxt;
-            finish_cur     <= finish_nxt;
-            back_cur       <= back_nxt;
-			stable_counter <= stable_counter_nxt;
+            trigger_cur     <= trigger_nxt;
+            state_cur       <= state_nxt;
+            stateTem_cur    <= stateTem_nxt;
+            move_cur        <= move_nxt;
+            cut_cur         <= cut_nxt;
+            length_cur      <= length_nxt;
+            segment_cur     <= segment_nxt;
+            location_cur    <= location_nxt;
+            counter         <= counter_nxt;
+            finish_cur      <= finish_nxt;
+            back_cur        <= back_nxt;
+			stable_counter  <= stable_counter_nxt;
+			trigger_counter <= trigger_counter_nxt;
         end
     end
 
