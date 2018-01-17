@@ -179,13 +179,12 @@ module controller#(
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
+						  move_nxt = 1'b1;
                     if(triggerSuc) begin
                         state_nxt = MEASURE;
-                        move_nxt = 1'b1;
                     end
                     else begin
                         state_nxt = TRIGGER;
-                        move_nxt = 1'b0;
                     end
                 end
             end
@@ -206,14 +205,15 @@ module controller#(
                         counter_nxt = counter;
 					     end
                     else if(valid) begin
-						      move_nxt = 1'b0;
                         if( distance < (location_cur - segment_cur))begin
                             // GO TO CUT
+									 move_nxt = 1'b0;
                             cut_nxt = 1'b1;
                             state_nxt = CUT;
                             counter_nxt = counter + 5'd1;
                         end
                         else begin
+								    move_nxt = 1'b1;
                             cut_nxt = 1'b0;
                             state_nxt = TRIGGER;
                             counter_nxt = counter;
@@ -274,14 +274,13 @@ module controller#(
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
+						  move_nxt = 1'b1;
                     if(triggerSuc) begin
                         state_nxt = BACK;
-                        move_nxt = 1'b1;
                         back_nxt = 1'b1;
                     end
                     else begin
                         state_nxt = BACK_TRI;
-                        move_nxt = 1'b0;
                         back_nxt = 1'b0;
                     end
                 end
@@ -296,22 +295,23 @@ module controller#(
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-					if(fail) begin
-						move_nxt = 1'b0;
+				        if(fail) begin
+						      move_nxt = 1'b0;
                         state_nxt = BACK_TRI;
                         finish_nxt = 1'b0;
                         back_nxt = 1'b0;
-					end
+				        end
                     else if(valid) begin
-						move_nxt = 1'b0;
-						back_nxt = 1'b0;
+						      back_nxt = 1'b0;
                         if( distance >= length_cur)begin 
                             state_nxt = IDLE;
                             finish_nxt = 1'b1;
+									 move_nxt = 1'b0;
                         end
                         else begin
                             state_nxt = BACK_TRI;
-                            finish_nxt = 1'b0;                          
+                            finish_nxt = 1'b0;
+                            move_nxt = 1'b1;									 
                         end
                     end
                     else begin
