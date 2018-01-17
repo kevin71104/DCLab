@@ -79,8 +79,8 @@ module controller#(
 //==== combinational circuit ============================
 
     // for testing!!!!!!!!!!!!!!!!!1
-	 assign state_o = state_cur;
-	 assign stable_cnt_o = stable_counter;
+	assign state_o = state_cur;
+	assign stable_cnt_o = stable_counter;
 
 
     assign trigger = trigger_cur;
@@ -94,22 +94,22 @@ module controller#(
         trigger_nxt = 1'b0;
         case(state_cur)
             INIT_TRI: begin
-				    if (pause) begin
-					     trigger_nxt = 1'b0;
-				    end
-				    else begin
-					     if (~triggerSuc) begin
-						      if(stable_counter >= 12'd2500) begin
-					    		    trigger_nxt = 1'b1;
-					    	   end
-						      else begin
-							       trigger_nxt = 1'b0;
-						      end
-					     end
-					     else begin
-						      trigger_nxt = 1'b0;
-					     end
-				    end
+				if (pause) begin
+					trigger_nxt = 1'b0;
+				end
+				else begin
+					if (~triggerSuc) begin
+						if(stable_counter >= 12'd2500) begin
+					    	trigger_nxt = 1'b1;
+					    end
+						else begin
+							trigger_nxt = 1'b0;
+						end
+					end
+					else begin
+						trigger_nxt = 1'b0;
+					end
+				end
             end
             TRIGGER: begin
                 if (pause) begin

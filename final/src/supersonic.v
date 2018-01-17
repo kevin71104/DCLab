@@ -11,8 +11,10 @@ module supersonic#(
     output            valid,
     output            triggerSuc,
     output [DisLen:0] distance,  // number of cycles
-	 // testing
-	 output            superState
+	//output            fail,	
+	
+	// testing
+	output            superState
 );
 
 // a clock cycle is 20 ns
@@ -36,8 +38,8 @@ module supersonic#(
     assign valid        = valid_cur;
     assign distance     = distance_cur;
     assign triggerSuc   = triggerSuc_cur;
-	 // testing
-	 assign superState = state_cur;
+	// testing
+	assign superState = state_cur;
 	
 	assign prev_echo_nxt = echo;
 
@@ -48,7 +50,8 @@ module supersonic#(
         triggerSuc_nxt  = 1'b0;
         case (state_cur)
             1'b0: begin
-                if (prev_echo_cur ^ echo && echo)begin
+                //if (prev_echo_cur ^ echo && echo)begin
+				if (echo)begin
                     state_nxt       = 1'b1;
                     distance_nxt    = {TotLen{1'b0}};
                     triggerSuc_nxt  = 1'b1;
