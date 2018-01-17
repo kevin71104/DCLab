@@ -156,7 +156,8 @@ cut_signal[3:0] : GPIO[]
 mover_signal[3:0]:GPIO[]
 */
 
-    localparam define_speed = 1000;//ms
+    localparam define_cut_speed = 5;//ms
+    localparam define_motor_speed = 1000;//ms
     
 //=========== wire declaration ============
     logic       start;
@@ -166,12 +167,15 @@ mover_signal[3:0]:GPIO[]
     logic       finish;
         
     // for testing 
-    logic [31:0] distance;
-	 logic move;
-	 logic cut;
-	 logic [3:0] state;
-	 logic [3:0] cut_signal;
-	 logic [3:0] movet_signal;
+    logic [16:0] distance;
+	 logic  move;
+	 logic  cut;
+	 logic  [3:0] state;
+	 logic  [3:0] cut_signal;
+	 logic  [3:0] move_signal;
+	 logic        testSuc;
+	 logic [11:0] stable_cnt;
+	 logic        superState;
 
 // ============ On Board FPGA =============
  
@@ -218,31 +222,39 @@ mover_signal[3:0]:GPIO[]
 		  .cut_i(cut),
 		  .state_i (state),
 		  .cut_signal_i(cut_signal),
-		  .move_signal_i(move_signal)
+		  .move_signal_i(move_signal),
+		  .trigger_i(GPIO[14]),
+		  .triggerSuc_i(testSuc),
+		  .echo_i(GPIO[15]),
+		  .stable_cnt_i(stable_cnt),
+		  .superState_i(superState)
 	);
     
     Top #(
-        .define_speed(define_speed)
+        .define_cut_speed(define_cut_speed),
+        .define_motor_speed(define_motor_speed)
     )DUT (
-		.clk            (CLOCK_50),
-		.rst_n          (KEY[0]),
-		.start_i        (start),
-		.pause_i        (pause),
-		.slice_i        (slice),
-		.slice_num_o    (slice_num),
-		.finish_o       (finish),
-		.echo_i         (),
-		.trigger_o      (),
-		.move_signal_o  ({GPIO[34],GPIO[35],GPIO[33],GPIO[32]}),
-		// .cut_signal_o   ({GPIO[0],GPIO[1],GPIO[2],GPIO[3]}), 
-        
+		 .clk            (CLOCK_50),
+		 .rst_n          (KEY[0]),
+		 .start_i        (start),
+	  	 .pause_i        (pause),
+	  	 .slice_i        (slice),
+		 .slice_num_o    (slice_num),
+		 .finish_o       (finish),
+		 .echo_i         (GPIO[15]), // FPGA 18
+		 .trigger_o      (GPIO[14]), // FPGA 17
+		 .move_signal_o  (move_signal),
+	     //.cut_signal_o   ({GPIO[0],GPIO[1],GPIO[2],GPIO[3]}),    
         // for testing 
-        .distance_o     (distance),
-		  .move_o(move),
-		  .cut_o(cut),
-		  .state_o(state)
+       .distance_o     (distance),
+		 .move_o(move),
+		 .cut_o(cut),
+		 .state_o(state),
+		 .triggerSuc_o(testSuc),
+		 .stable_cnt_o(stable_cnt),
+		 .superState_o(superState)
 	);
 	
-//	assign GPIO[35:0] = 36'hfffffffff;
+	 assign {GPIO[35],GPIO[34],GPIO[33],GPIO[32]} = move_signal;
     assign GPIO[31:30] = 2'b11;
 endmodule

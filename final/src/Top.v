@@ -1,5 +1,6 @@
 module Top#(
-    parameter  define_speed = 10000 //ms
+    parameter  define_cut_speed = 5, //ms
+    parameter  define_motor_speed = 1000 //ms
 
 )(
     input       clk,
@@ -21,10 +22,13 @@ module Top#(
     output [3:0]  cut_signal_o,
     
     // for testing
-    output [16:0]     distance_o,
-	output	move_o,
-	output	cut_o,
-	output [3:0] state_o
+    output [16:0] distance_o,
+	 output	      move_o,
+	 output	      cut_o,
+	 output  [3:0] state_o,
+	 output        triggerSuc_o,
+	 output [11:0] stable_cnt_o,
+	 output        superState_o
 );
 
     wire        valid;
@@ -39,13 +43,24 @@ module Top#(
     wire        direction_cut;
     wire        new_clk0;    
     wire        new_clk1;
+	 
+	 wire [3:0]  moveA_signal;
+	 wire [3:0]  moveB_signal;
+
+	 //assign move_signal_O = {moveB_signal[3:2],moveA_signal[1:0]};
+	 //assign move_signal_O = 4'b1001;
+	 
     
-    assign distance_o = distance;
+	 
+	 // for testing!!!!!!!!!!!!!!!!!!!!!
+   assign distance_o = distance;
 	assign move_o = move;
 	assign cut_o = cut;
+	assign triggerSuc_o = triggerSuc;
+
 
     controller controller(
-        .clk        (clk),
+      .clk        (clk),
 		.rst_n      (rst_n),
 		.start      (start_i),
 		.pause      (pause_i),
@@ -55,13 +70,14 @@ module Top#(
 		.triggerSuc (triggerSuc),
 		.trigger    (trigger_o),
 		.move       (move),
-        .back       (back),
+      .back       (back),
 		.cut_end    (cut_end),
 		.cut        (cut),
-        .finish     (finish_o),
+      .finish     (finish_o),
 		  
 		  // for testing!!!!!!!!!!!!!!!!!
-		  .state_o	(state_o)
+		.state_o	(state_o),
+		.stable_cnt_o(stable_cnt_o)
     );
     
     supersonic supersonic0(
@@ -70,8 +86,10 @@ module Top#(
 		.echo       (echo_i),
 		.valid      (valid),
 		.distance   (distance),
-        .triggerSuc (triggerSuc),
-		.trigger    (trigger_o)
+      .triggerSuc (triggerSuc),
+		.trigger    (trigger_o),
+		// testing
+		.superState (superState_o)
 	);
 
     // cut    
@@ -83,24 +101,25 @@ module Top#(
     );
     
     cut_driver #(
-        .define_speed(define_speed)
+        .define_cut_speed(define_cut_speed)
     )cut_driver0(
 		.clk        (clk),
 		.rst_n      (rst_n),
-		.cut_i      (1'b1),
+		.cut_i      (cut),
 		.cut_end_o  (cut_end),
         .signal_o   (cut_signal_o)
     );
     
-    // move
+    // move 
     track_driver #(
-        .define_speed(define_speed)
-    )track_driver0(
+        .define_motor_speed(define_motor_speed)
+    )track_driverA(
 		.clk        (clk),
 		.rst_n      (rst_n),
-		.move_i     (1'b1),
-		.back_i     (back),
-        .signal_o   (move_signal_o)
+		.move_i     (1'b0),
+		.back_i     (1'b1),
+        .signal_o (move_signal_o)
     );
+
 
 endmodule

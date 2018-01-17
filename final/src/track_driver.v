@@ -9,7 +9,7 @@
 // Target Devices: DE2-115
 
 module track_driver#(
-    parameter define_speed = 10
+    parameter define_motor_speed = 10
 )(
     input       clk,
     input       rst_n,
@@ -24,7 +24,7 @@ module track_driver#(
     wire new_clk;
     
     clock_div1 #(
-        .define_speed(define_speed)
+        .define_motor_speed(define_motor_speed)
     )clock_div1(
 		.clk        (clk),
 		.rst_n      (rst_n),
@@ -45,7 +45,7 @@ endmodule
 // and divides that down to a slower clock. It counts at the rate of the 
 // system clock to define_speed and toggles the output clock signal. 
 module clock_div1#(
-  parameter define_speed = 10 // Unit: ms 
+  parameter define_motor_speed = 1000 // Unit: ms 
 )
 (
     input clk,
@@ -57,7 +57,7 @@ module clock_div1#(
     // Since the system clock is 50MHZ, 
     // define_speed = (2*desired_clock_frequency)/50MHz
     // localparam desired_clock_freq = 50Hz
-    localparam define_half_cycle = 25000*define_speed-1;
+    localparam define_half_cycle = 25000*define_motor_speed-1;
     
     // Count value that counts to define_speed
     reg [31:0] count;
@@ -108,8 +108,8 @@ module track_step_driver(
     // sig4 -> sig3 -> sig2 -> sig1
     
     // "Two phase mode"
-    localparam pos     = 4'b0101;
-    localparam neg     = 4'b1010;
+    localparam pos     = 4'b1001;
+    localparam neg     = 4'b0110;
     localparam stop    = 4'b0000;
 
 // =========== Finite State Machine ============
@@ -138,7 +138,7 @@ module track_step_driver(
             else if (direction == 1'b1 && en == 1'b1)
                 next_state = neg;
             else 
-                next_state = pos;
+                next_state = stop;
         end
         neg: begin
             if (direction == 1'b0 && en == 1'b1)
@@ -146,7 +146,7 @@ module track_step_driver(
             else if (direction == 1'b1 && en == 1'b1)
                 next_state = neg;
             else 
-                next_state = neg;
+                next_state = stop;
         end 
         default:
             next_state = stop; 

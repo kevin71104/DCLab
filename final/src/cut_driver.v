@@ -7,7 +7,7 @@
 // Target Devices: DE2-115
 
 module cut_driver#(
-    parameter define_speed = 10
+    parameter define_cut_speed = 10
 )(
     input       clk,
     input       rst_n,
@@ -22,7 +22,7 @@ module cut_driver#(
     wire new_clk;
     
     clock_div0 #(
-        .define_speed(define_speed)
+        .define_cut_speed(define_cut_speed)
     )clock_div0(
 		.clk        (clk),
 		.rst_n      (rst_n),
@@ -30,7 +30,7 @@ module cut_driver#(
     );
     
     cutting_step_driver #(
-        .define_speed(define_speed)
+        .define_cut_speed(define_cut_speed)
     )cutting_step_driver0(
 		.clk        (new_clk),
 		.rst_n      (rst_n),
@@ -46,7 +46,7 @@ endmodule
 // and divides that down to a slower clock. It counts at the rate of the 
 // system clock to define_speed and toggles the output clock signal. 
 module clock_div0#(
-  parameter define_speed = 10 // Unit: ms 
+  parameter define_cut_speed = 10 // Unit: ms 
 )
 (
     input clk,
@@ -58,7 +58,7 @@ module clock_div0#(
     // Since the system clock is 50MHZ, 
     // define_speed = (2*desired_clock_frequency)/50MHz
     // localparam desired_clock_freq = 50Hz
-    localparam define_half_cycle = 25000*define_speed-1;
+    localparam define_half_cycle = 25000*define_cut_speed-1;
     
     // Count value that counts to define_speed
     reg [31:0] count;
@@ -91,7 +91,7 @@ endmodule
 // the output to the PmodSTEP. It alternates one of four pins being
 // high at a rate set by the clock divider. 
 module cutting_step_driver#(
-    parameter define_speed = 10 // unit: ms, which means 10ms trun 0.9 degree
+    parameter define_cut_speed = 10 // unit: ms, which means 10ms trun 0.9 degree
 )
 (
     input   clk,    // clk from clock driver
@@ -105,7 +105,7 @@ module cutting_step_driver#(
     output  [3:0] signal_o
     );
     
-    localparam define_clock_cycle = 50000*define_speed;
+    localparam define_clock_cycle = 50000*define_cut_speed;
     
     // 4  3  2 1 -th bit
     // B' A' B A

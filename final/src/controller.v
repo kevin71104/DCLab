@@ -26,7 +26,8 @@ module controller#(
     output       finish,
 	 
 	//for testing !!!!!!!!!!
-	output	[3:0]state_o
+	output	[3:0]state_o,
+	output  [11:0]stable_cnt_o
 );
 
 //==== Parameter declaration ============================
@@ -79,6 +80,7 @@ module controller#(
 
     // for testing!!!!!!!!!!!!!!!!!1
 	 assign state_o = state_cur;
+	 assign stable_cnt_o = stable_counter;
 
 
     assign trigger = trigger_cur;
@@ -92,22 +94,22 @@ module controller#(
         trigger_nxt = 1'b0;
         case(state_cur)
             INIT_TRI: begin
-				if (pause) begin
-					trigger_nxt = 1'b0;
-				end
-				else begin
-					if (~triggerSuc) begin
-						if(stable_counter >= 12'd2500) begin
-							trigger_nxt = 1'b1;
-						end
-						else begin
-							trigger_nxt = 1'b0;
-						end
-					end
-					else begin
-						trigger_nxt = 1'b0;
-					end
-				end
+				    if (pause) begin
+					     trigger_nxt = 1'b0;
+				    end
+				    else begin
+					     if (~triggerSuc) begin
+						      if(stable_counter >= 12'd2500) begin
+					    		    trigger_nxt = 1'b1;
+					    	   end
+						      else begin
+							       trigger_nxt = 1'b0;
+						      end
+					     end
+					     else begin
+						      trigger_nxt = 1'b0;
+					     end
+				    end
             end
             TRIGGER: begin
                 if (pause) begin
@@ -178,21 +180,21 @@ module controller#(
         case(state_cur)
             INIT_TRI: begin
                 if (pause) begin
-					stable_counter_nxt = 12'd0;
-				end
-				else begin
-					if (~triggerSuc) begin
-						if(stable_counter < 12'd2500) begin
-							stable_counter_nxt = stable_counter + 1;
-						end
-						else begin
-							stable_counter_nxt = 12'd2500;
-						end
-					end
-					else begin
-						stable_counter_nxt = 12'd0;
-					end
-				end
+					     stable_counter_nxt = 12'd0;
+				    end
+				    else begin
+					     if (~triggerSuc) begin
+						      if(stable_counter < 12'd2500) begin
+							       stable_counter_nxt = stable_counter + 12'd1;
+						      end
+						      else begin
+                            stable_counter_nxt = 12'd2500;
+						      end
+					     end
+					     else begin
+						      stable_counter_nxt = 12'd0;
+					     end
+				    end
             end
             TRIGGER: begin
                 if (pause) begin
@@ -201,7 +203,7 @@ module controller#(
 				else begin
 					if (~triggerSuc) begin
 						if(stable_counter < 12'd2500) begin
-							stable_counter_nxt = stable_counter + 1;
+							stable_counter_nxt = stable_counter + 12'd1;
 						end
 						else begin
 							stable_counter_nxt = 12'd2500;
@@ -219,7 +221,7 @@ module controller#(
 				else begin
 					if (~triggerSuc) begin
 						if(stable_counter < 12'd2500) begin
-							stable_counter_nxt = stable_counter + 1;
+							stable_counter_nxt = stable_counter + 12'd1;
 						end
 						else begin
 							stable_counter_nxt = 12'd2500;
@@ -332,7 +334,7 @@ module controller#(
                             // GO TO CUT
                             cut_nxt = 1'b1;
                             state_nxt = CUT;
-                            counter_nxt = counter + 1;
+                            counter_nxt = counter + 5'd1;
                         end
                         else begin
                             cut_nxt = 1'b0;

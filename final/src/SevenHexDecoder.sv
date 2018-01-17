@@ -18,12 +18,17 @@ module SevenHexDecoder(
 	output logic [6:0]  HEX7_o,    
     
     // for testing 
-    input     [31:0]   distance_i,
-	 input move_i,
-	 input cut_i,
-	 input [3:0] state_i,
-	 input [3:0] cut_signal_i,
-	 input [3:0] move_signal_i
+    input [16:0] distance_i,
+	 input        move_i,
+	 input        cut_i,
+	 input  [3:0] state_i,
+	 input  [3:0] cut_signal_i,
+	 input  [3:0] move_signal_i,
+	 inout        trigger_i,
+	 input        triggerSuc_i,
+	 input        echo_i,
+	 input [11:0] stable_cnt_i,
+	 input        superState_i
 );
 	/* The layout of seven segment display, 1: dark
 	 *    00
@@ -95,81 +100,105 @@ module SevenHexDecoder(
 			default: nxt_state = state;	
 		endcase
 	end
-	
-	always_comb begin
-//        case(distance_i[5+:5])
-		case(state_i)
-			4'd0: begin HEX7_o = D0; HEX6_o = D0; end
-			4'd1: begin HEX7_o = D0; HEX6_o = D1; end
-			4'd2: begin HEX7_o = D0; HEX6_o = D2; end
-			4'd3: begin HEX7_o = D0; HEX6_o = D3; end
-			4'd4: begin HEX7_o = D0; HEX6_o = D4; end
-			4'd5: begin HEX7_o = D0; HEX6_o = D5; end
-			4'd6: begin HEX7_o = D0; HEX6_o = D6; end
-			4'd7: begin HEX7_o = D0; HEX6_o = D7; end
-			4'd8: begin HEX7_o = D0; HEX6_o = D8; end
-			4'd9: begin HEX7_o = D0; HEX6_o = D9; end
-			4'd10: begin HEX7_o = D0; HEX6_o = D4; end
-			4'd11: begin HEX7_o = D0; HEX6_o = D5; end
-			4'd12: begin HEX7_o = D0; HEX6_o = D6; end
-			4'd13: begin HEX7_o = D0; HEX6_o = D7; end
-			4'd14: begin HEX7_o = D0; HEX6_o = D8; end
-			4'd15: begin HEX7_o = D0; HEX6_o = D9; end
-//			2'b00: begin HEX7_o = D0; HEX6_o = D0; end
-//			2'b01: begin HEX7_o = D0; HEX6_o = D1; end
-//			2'b10: begin HEX7_o = D1; HEX6_o = D0; end
-//			2'b11: begin HEX7_o = D1; HEX6_o = D1; end
-//			
-//			5'd0: begin HEX7_o = D0; HEX6_o = D0; end
-//			5'd1: begin HEX7_o = D0; HEX6_o = D1; end
-//			5'd2: begin HEX7_o = D0; HEX6_o = D2; end
-//			5'd3: begin HEX7_o = D0; HEX6_o = D3; end
-//			5'd4: begin HEX7_o = D0; HEX6_o = D4; end
-//			5'd5: begin HEX7_o = D0; HEX6_o = D5; end
-//			5'd6: begin HEX7_o = D0; HEX6_o = D6; end
-//			5'd7: begin HEX7_o = D0; HEX6_o = D7; end
-//			5'd8: begin HEX7_o = D0; HEX6_o = D8; end
-//			5'd9: begin HEX7_o = D0; HEX6_o = D9; end
-//			5'd10: begin HEX7_o = D1; HEX6_o = D0; end
-//			5'd11: begin HEX7_o = D1; HEX6_o = D1; end
-//			5'd12: begin HEX7_o = D1; HEX6_o = D2; end
-//			5'd13: begin HEX7_o = D1; HEX6_o = D3; end
-//			5'd14: begin HEX7_o = D1; HEX6_o = D4; end
-//			5'd15: begin HEX7_o = D1; HEX6_o = D5; end
-//			5'd16: begin HEX7_o = D1; HEX6_o = D6; end
+	 /*
+    always_comb begin
+	     case(distance_i[16:13])
+		  //case(move_signal_i)
+            4'd0:    begin HEX7_o = D0; HEX6_o = D0; end
+			   4'd1:    begin HEX7_o = D0; HEX6_o = D1; end
+			   4'd2:    begin HEX7_o = D0; HEX6_o = D2; end
+			   4'd3:    begin HEX7_o = D0; HEX6_o = D3; end
+			   4'd4:    begin HEX7_o = D0; HEX6_o = D4; end
+			   4'd5:    begin HEX7_o = D0; HEX6_o = D5; end
+			   4'd6:    begin HEX7_o = D0; HEX6_o = D6; end
+			   4'd7:    begin HEX7_o = D0; HEX6_o = D7; end
+			   4'd8:    begin HEX7_o = D0; HEX6_o = D8; end
+		   	4'd9:    begin HEX7_o = D0; HEX6_o = D9; end
+			   4'd10:   begin HEX7_o = D1; HEX6_o = D0; end
+			   4'd11:   begin HEX7_o = D1; HEX6_o = D1; end
+			   4'd12:   begin HEX7_o = D1; HEX6_o = D2; end
+			   4'd13:   begin HEX7_o = D1; HEX6_o = D3; end
+			   4'd14:   begin HEX7_o = D1; HEX6_o = D4; end
+			   4'd15:   begin HEX7_o = D1; HEX6_o = D5; end
             default: begin HEX7_o = D0; HEX6_o = D0; end
 		endcase
 	end
+	*/
 
-//	always_comb begin
-//		 case(slice_num_i)
-//			5'd0: begin HEX7_o = D0; HEX6_o = D0; end
-//			5'd1: begin HEX7_o = D0; HEX6_o = D1; end
-//			5'd2: begin HEX7_o = D0; HEX6_o = D2; end
-//			5'd3: begin HEX7_o = D0; HEX6_o = D3; end
-//			5'd4: begin HEX7_o = D0; HEX6_o = D4; end
-//			5'd5: begin HEX7_o = D0; HEX6_o = D5; end
-//			5'd6: begin HEX7_o = D0; HEX6_o = D6; end
-//			5'd7: begin HEX7_o = D0; HEX6_o = D7; end
-//			5'd8: begin HEX7_o = D0; HEX6_o = D8; end
-//			5'd9: begin HEX7_o = D0; HEX6_o = D9; end
-//			5'd10: begin HEX7_o = D1; HEX6_o = D0; end
-//			5'd11: begin HEX7_o = D1; HEX6_o = D1; end
-//			5'd12: begin HEX7_o = D1; HEX6_o = D2; end
-//			5'd13: begin HEX7_o = D1; HEX6_o = D3; end
-//			5'd14: begin HEX7_o = D1; HEX6_o = D4; end
-//			5'd15: begin HEX7_o = D1; HEX6_o = D5; end
-//			5'd16: begin HEX7_o = D1; HEX6_o = D6; end
-//            default: begin HEX7_o = D0; HEX6_o = D0; end
-//		endcase
-//	end
+    always_comb begin
+	     case(state_i)
+		      4'd0 :    begin HEX5_o = D0; end
+				4'd1 :    begin HEX5_o = D1; end 
+				4'd2 :    begin HEX5_o = D2; end
+				4'd3 :    begin HEX5_o = D3; end
+				4'd4 :    begin HEX5_o = D4; end
+				4'd5 :    begin HEX5_o = D5; end
+				4'd6 :    begin HEX5_o = D6; end
+				4'd7 :    begin HEX5_o = D7; end
+				4'd8 :    begin HEX5_o = D8; end
+				default : begin HEX5_o = D0; end
+		  endcase
+	 end
+	 always_comb begin
+	     case(trigger_i)
+		      1'd0 :    begin HEX6_o = D0; end
+				1'd1 :    begin HEX6_o = D1; end 
+				default : begin HEX6_o = D0; end
+		  endcase
+	 end
+	 always_comb begin
+	     case(superState_i)
+		      1'd0 :    begin HEX7_o = D0; end
+				1'd1 :    begin HEX7_o = D1; end 
+				default : begin HEX7_o = D0; end
+		  endcase
+	 end
+	 always_comb begin
+	     case(echo_i)
+		      1'd0 :    begin HEX4_o = D0; end
+				1'd1 :    begin HEX4_o = D1; end 
+				default : begin HEX4_o = D0; end
+		  endcase
+	 end
+	 always_comb begin
+	     case(stable_cnt_i[9:7]) // 512 + 256 + 128
+		      3'b000 :  begin HEX2_o = D0; end
+				3'b001 :  begin HEX2_o = D1; end 
+				3'b010 :  begin HEX2_o = D2; end
+				3'b011 :  begin HEX2_o = D3; end
+				3'b100 :  begin HEX2_o = D5; end
+				3'b101 :  begin HEX2_o = D6; end
+				3'b110 :  begin HEX2_o = D7; end
+				3'b111 :  begin HEX2_o = D9; end
+				default : begin HEX2_o = D0; end
+		  endcase
+	 end
+	 always_comb begin
+	     case(stable_cnt_i[11:10]) // 2048 + 1024
+		      2'b00 :   begin HEX3_o = D0; end
+				2'b01 :   begin HEX3_o = D1; end 
+				2'b10 :   begin HEX3_o = D2; end
+				2'b11 :   begin HEX3_o = D3; end
+				default : begin HEX3_o = D0; end
+		  endcase
+	 end
+	 
+	 always_comb begin
+	     if(stable_cnt_i > 12'd0) begin 
+		      HEX1_o = D1; 
+		  end
+		  else begin 
+		      HEX1_o = D0; 
+		  end 
+	 end
+	 
     
     assign HEX0_o = HEX0;
-    assign HEX1_o = HEX1;
-    assign HEX2_o = HEX2;
-    assign HEX3_o = HEX3;
-    assign HEX4_o = HEX4;
-    assign HEX5_o = DARK;
+    //assign HEX1_o = HEX1;
+    //assign HEX2_o = HEX2;
+    //assign HEX3_o = HEX3;
+    //assign HEX4_o = HEX4;
+    //assign HEX5_o = DARK;
 
     always_comb begin
         if(state == PAUSE) begin // PAUSE
