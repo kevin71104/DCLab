@@ -18,7 +18,7 @@ module SevenHexDecoder(
 	output logic [6:0]  HEX7_o,    
     
     // for testing 
-    input [16:0] distance_i,
+    input [26:0] distance_i,
 	 input        move_i,
 	 input        cut_i,
 	 input  [3:0] state_i,
@@ -29,7 +29,7 @@ module SevenHexDecoder(
 	 input        echo_i,
 	 input [11:0] stable_cnt_i,
 	 input        superState_i,
-	 input [16:0] location_i,
+	 input [26:0] location_i,
 	 input        smallornot_i
 );
 	/* The layout of seven segment display, 1: dark

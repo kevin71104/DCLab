@@ -1,5 +1,5 @@
 module controller#(
-    parameter DisLen = 16,
+    parameter DisLen = 26,
 	parameter TotLen = DisLen + 1
 )
 (
@@ -44,8 +44,8 @@ module controller#(
     localparam BACK_TRI = 4'd7;
     localparam BACK     = 4'd8;
 	
-	localparam spacing  = 22'd2500000;
-	localparam triggerTime = 9'd500;
+	 localparam spacing  = 22'd2500000;
+	 localparam triggerTime = 9'd500;
 
 //==== wire/reg declaration =============================
     // Output registers
@@ -67,24 +67,24 @@ module controller#(
     reg  [3:0] stateTem_nxt;
 
     // DISTANCE-RELATED
-    reg [DisLen:0] length_cur;
-    reg [DisLen:0] length_nxt;
-    reg [DisLen:0] segment_cur;
-    reg [DisLen:0] segment_nxt;
-    reg [DisLen:0] location_cur;  // location of start point
-    reg [DisLen:0] location_nxt;
+    reg unsigned [DisLen:0] length_cur;
+    reg unsigned [DisLen:0] length_nxt;
+    reg unsigned [DisLen:0] segment_cur;
+    reg unsigned [DisLen:0] segment_nxt;
+    reg unsigned [DisLen:0] location_cur;  // location of start point
+    reg unsigned [DisLen:0] location_nxt;
 
     // CUT-Counter
     reg  [4:0] counter;
     reg  [4:0] counter_nxt;
 	
-	// Stable-counter : keep at least 50ms spacing -> 2500 cycles
-	reg [21:0] stable_counter;
+	 // Stable-counter : keep at least 50ms spacing -> 2500 cycles
+	 reg [21:0] stable_counter;
     reg [21:0] stable_counter_nxt;
 	
-	// triggerTime-Counter
-	reg  [8:0] trigger_counter;
-	reg  [8:0] trigger_counter_nxt;
+	 // triggerTime-Counter
+	 reg  [8:0] trigger_counter;
+	 reg  [8:0] trigger_counter_nxt;
 
 //==== combinational circuit ============================
 
@@ -335,7 +335,7 @@ module controller#(
 				end
 				else begin
 					if (~triggerSuc) begin
-						if((stable_counter >= spacing) && (trigger_counter < 9'd500)) begin
+						if((stable_counter >= spacing) && (trigger_counter < triggerTime)) begin
 					    	trigger_nxt = 1'b1;
 					    end
 						else begin
@@ -353,7 +353,7 @@ module controller#(
 				end
 				else begin
 					if (~triggerSuc) begin
-						if((stable_counter >= spacing) && (trigger_counter < 9'd500))begin
+						if((stable_counter >= spacing) && (trigger_counter < triggerTime))begin
 							trigger_nxt = 1'b1;
 						end
 						else begin
@@ -371,7 +371,7 @@ module controller#(
 				end
 				else begin
 					if (~triggerSuc) begin
-						if((stable_counter >= spacing) && (trigger_counter < 9'd500))begin
+						if((stable_counter >= spacing) && (trigger_counter < triggerTime))begin
 							trigger_nxt = 1'b1;
 						end
 						else begin
@@ -526,7 +526,8 @@ module controller#(
         endcase
 	end
 
-//==== synchronous circuit ==============================
+
+	//==== synchronous circuit ==============================
     always @(posedge clk or negedge rst_n) begin
         // asynchronous reset
         if (~rst_n) begin
@@ -535,19 +536,14 @@ module controller#(
             stateTem_cur    <= 3'd0;
             move_cur        <= 1'b0;
             cut_cur         <= 1'b0;
-			/*
             length_cur     <= {TotLen{1'b0}};
             segment_cur    <= {TotLen{1'b0}};
             location_cur   <= {TotLen{1'b0}};
-			*/
-		    length_cur      <= 17'b0;
-            segment_cur     <= 17'b0;
-            location_cur    <= 17'b0;
             counter         <= 5'd0;
             finish_cur      <= 1'b0;
             back_cur        <= 1'b0;
-			stable_counter  <= 22'd0;
-			trigger_counter <= 9'd0;
+			   stable_counter  <= 22'd0;
+			   trigger_counter <= 9'd0;
         end
         else begin
             trigger_cur     <= trigger_nxt;
@@ -561,8 +557,8 @@ module controller#(
             counter         <= counter_nxt;
             finish_cur      <= finish_nxt;
             back_cur        <= back_nxt;
-			stable_counter  <= stable_counter_nxt;
-			trigger_counter <= trigger_counter_nxt;
+			   stable_counter  <= stable_counter_nxt;
+			   trigger_counter <= trigger_counter_nxt;
         end
     end
 

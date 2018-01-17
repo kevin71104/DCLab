@@ -1,6 +1,6 @@
 module supersonic#(
-    parameter DisLen = 16,
-	parameter TotLen = DisLen + 1
+    parameter DisLen = 26,
+	 parameter TotLen = DisLen + 1
 )
 (
     input             clk,
@@ -63,16 +63,16 @@ module supersonic#(
                 end
                 else begin
                     state_nxt       = state_cur;
-                    distance_nxt    = distance_cur;
+                    distance_nxt    = {TotLen{1'b0}};
                     triggerSuc_nxt  = 1'b0;
                 end
             end
             1'b1: begin
                 triggerSuc_nxt = 1'b0;
                 if (distance_cur != {TotLen{1'b1}})begin
-					distance_nxt= distance_cur + 17'd1;
+					distance_nxt= distance_cur + {{DisLen{1'b0}},1'b1};
 					fail_nxt    = 1'b0; 
-                    if ((prev_echo_cur ^ echo ) && ~echo)begin
+                    if (/*(prev_echo_cur ^ echo ) &&*/ ~echo)begin
                         state_nxt   = 1'b0;
                         valid_nxt   = 1'b1;
                     end

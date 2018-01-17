@@ -1,6 +1,8 @@
 module Top#(
-    parameter  define_cut_speed = 5, //ms
-    parameter  define_motor_speed = 1000 //ms
+    parameter  define_cut_speed = 5,      //ms
+    parameter  define_motor_speed = 1000, //ms
+	 parameter  DisLen = 26,
+	 parameter  TotLen = DisLen + 1
 
 )(
     input       clk,
@@ -8,7 +10,7 @@ module Top#(
     input       start_i,
     input       pause_i,
     input       slice_i,
-    output [4:0]slice_num_o,
+    output[4:0] slice_num_o,
     output      finish_o,
     
     // I/O with supersonic
@@ -22,19 +24,19 @@ module Top#(
     output [3:0]  cut_signal_o,
     
     // for testing
-    output [16:0] distance_o,
+    output [DisLen:0] distance_o,
 	 output	      move_o,
 	 output	      cut_o,
 	 output  [3:0] state_o,
 	 output        triggerSuc_o,
-	 output [11:0] stable_cnt_o,
+	 output [21:0] stable_cnt_o,
 	 output        superState_o,
-	 output [16:0] location_o,
+	 output [DisLen:0] location_o,
 	 output        smallornot_o
 );
 
     wire        valid;
-    wire [16:0] distance;
+    wire [DisLen:0] distance;
     wire        triggerSuc;
     wire        move;
     wire        back;
