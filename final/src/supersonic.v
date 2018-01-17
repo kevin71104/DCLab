@@ -52,6 +52,7 @@ module supersonic#(
         state_nxt       = state_cur;
         valid_nxt       = 1'b0;
         triggerSuc_nxt  = 1'b0;
+		  fail_nxt        = 1'b0;
         case (state_cur)
             1'b0: begin
                 //if (prev_echo_cur ^ echo && echo)begin
@@ -71,7 +72,7 @@ module supersonic#(
                 if (distance_cur != {TotLen{1'b1}})begin
 					distance_nxt= distance_cur + 17'd1;
 					fail_nxt    = 1'b0; 
-                    if (prev_echo_cur ^ echo && ~echo)begin
+                    if ((prev_echo_cur ^ echo ) && ~echo)begin
                         state_nxt   = 1'b0;
                         valid_nxt   = 1'b1;
                     end
@@ -94,20 +95,20 @@ module supersonic#(
     always @(posedge clk or negedge rst_n) begin
         // asynchronous reset
         if (~rst_n) begin
-			prev_echo_cur  <= 1'b0;
+			   prev_echo_cur  <= 1'b0;
             state_cur      <= 1'b0;
             valid_cur      <= 1'b0;
             distance_cur   <= {TotLen{1'b0}};
             triggerSuc_cur <= 1'b0;
-			fail_cur       <= 1'b0;
+			   fail_cur       <= 1'b0;
         end
         else begin
-			prev_echo_cur  <= prev_echo_nxt;
+			   prev_echo_cur  <= prev_echo_nxt;
             state_cur      <= state_nxt;
             valid_cur      <= valid_nxt;
             distance_cur   <= distance_nxt;
             triggerSuc_cur <= triggerSuc_nxt;
-			fail_cur       <= fail_nxt;
+			   fail_cur       <= fail_nxt;
         end
     end
 

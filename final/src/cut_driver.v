@@ -29,9 +29,7 @@ module cut_driver#(
 		.new_clk    (new_clk) 
     );
     
-    cutting_step_driver #(
-        .define_cut_speed(define_cut_speed)
-    )cutting_step_driver0(
+    cutting_step_driver cutting_step_driver0(
 		.clk        (new_clk),
 		.rst_n      (rst_n),
 		.en_i       (cut_i),
@@ -90,10 +88,7 @@ endmodule
 // Description: This is the state machine that drives
 // the output to the PmodSTEP. It alternates one of four pins being
 // high at a rate set by the clock divider. 
-module cutting_step_driver#(
-    parameter define_cut_speed = 10 // unit: ms, which means 10ms trun 0.9 degree
-)
-(
+module cutting_step_driver(
     input   clk,    // clk from clock driver
     input   rst_n,
     
@@ -105,7 +100,6 @@ module cutting_step_driver#(
     output  [3:0] signal_o
     );
     
-    localparam define_clock_cycle = 50000*define_cut_speed;
     
     // 4  3  2 1 -th bit
     // B' A' B A
@@ -131,7 +125,6 @@ module cutting_step_driver#(
     reg [3:0]   signal, nxt_signal;
     
     reg         direction, nxt_direction;
-    reg [31:0]  clk_cnt, nxt_clk_cnt; // 0~define_clock_cycle, cnt how many clk cycles
     reg [6:0]   cnt, nxt_cnt; // 0~100 each cnt represents 0.9 degree
 
 // =========== Finite State Machine ============
@@ -211,15 +204,6 @@ module cutting_step_driver#(
             nxt_signal = 0;
     end
     
-    always@(*) begin
-        if(clk_cnt == define_clock_cycle)
-            nxt_clk_cnt  = 0;
-        else
-        if(en_i) 
-            nxt_clk_cnt  = clk_cnt + 1'b1;
-        else 
-            nxt_clk_cnt  = clk_cnt;  
-    end
     
     // cnt && direction
     always@(*) begin
@@ -228,7 +212,7 @@ module cutting_step_driver#(
             nxt_direction   = direction + 1'b1;
         end
         else
-        if(clk_cnt == define_clock_cycle) begin
+        if(en_i) begin
             nxt_cnt         = cnt + 1'b1;
             nxt_direction   = direction;
         end
@@ -254,14 +238,12 @@ module cutting_step_driver#(
             signal      <= 0;  
             cut_end     <= 0;
             direction   <= 0;
-            clk_cnt     <= 0;
             cnt         <= 0;
         end
         else begin
             signal      <= nxt_signal;  
             cut_end     <= nxt_cut_end;
             direction   <= nxt_direction;
-            clk_cnt     <= nxt_clk_cnt;
             cnt         <= nxt_cnt;        
         end
     end

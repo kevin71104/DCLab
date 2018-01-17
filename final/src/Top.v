@@ -28,7 +28,9 @@ module Top#(
 	 output  [3:0] state_o,
 	 output        triggerSuc_o,
 	 output [11:0] stable_cnt_o,
-	 output        superState_o
+	 output        superState_o,
+	 output [16:0] location_o,
+	 output        smallornot_o
 );
 
     wire        valid;
@@ -39,19 +41,6 @@ module Top#(
     wire        cut_end;
     wire        cut;
     
-    wire        en_cut;
-    wire        direction_cut;
-    wire        new_clk0;    
-    wire        new_clk1;
-	 
-	 wire [3:0]  moveA_signal;
-	 wire [3:0]  moveB_signal;
-
-	 //assign move_signal_O = {moveB_signal[3:2],moveA_signal[1:0]};
-	 //assign move_signal_O = 4'b1001;
-	 
-    
-	 
 	 // for testing!!!!!!!!!!!!!!!!!!!!!
    assign distance_o = distance;
 	assign move_o = move;
@@ -77,7 +66,9 @@ module Top#(
 		  
 		  // for testing!!!!!!!!!!!!!!!!!
 		.state_o	(state_o),
-		.stable_cnt_o(stable_cnt_o)
+		.stable_cnt_o(stable_cnt_o),
+		.location_o(location_o),
+		.smallornot_o(smallornot_o)
     );
     
     supersonic supersonic0(
@@ -107,7 +98,7 @@ module Top#(
 		.rst_n      (rst_n),
 		.cut_i      (cut),
 		.cut_end_o  (cut_end),
-        .signal_o   (cut_signal_o)
+      .signal_o   (cut_signal_o)
     );
     
     // move 

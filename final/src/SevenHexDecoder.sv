@@ -28,7 +28,9 @@ module SevenHexDecoder(
 	 input        triggerSuc_i,
 	 input        echo_i,
 	 input [11:0] stable_cnt_i,
-	 input        superState_i
+	 input        superState_i,
+	 input [16:0] location_i,
+	 input        smallornot_i
 );
 	/* The layout of seven segment display, 1: dark
 	 *    00
@@ -127,23 +129,23 @@ module SevenHexDecoder(
 
     always_comb begin
 	     case(state_i)
-		      4'd0 :    begin HEX5_o = D0; end
-				4'd1 :    begin HEX5_o = D1; end 
-				4'd2 :    begin HEX5_o = D2; end
-				4'd3 :    begin HEX5_o = D3; end
-				4'd4 :    begin HEX5_o = D4; end
-				4'd5 :    begin HEX5_o = D5; end
-				4'd6 :    begin HEX5_o = D6; end
-				4'd7 :    begin HEX5_o = D7; end
-				4'd8 :    begin HEX5_o = D8; end
-				default : begin HEX5_o = D0; end
+		      4'd0 :    begin HEX6_o = D0; end
+				4'd1 :    begin HEX6_o = D1; end 
+				4'd2 :    begin HEX6_o = D2; end
+				4'd3 :    begin HEX6_o = D3; end
+				4'd4 :    begin HEX6_o = D4; end
+				4'd5 :    begin HEX6_o = D5; end
+				4'd6 :    begin HEX6_o = D6; end
+				4'd7 :    begin HEX6_o = D7; end
+				4'd8 :    begin HEX6_o = D8; end
+				default : begin HEX6_o = D0; end
 		  endcase
 	 end
 	 always_comb begin
 	     case(trigger_i)
-		      1'd0 :    begin HEX6_o = D0; end
-				1'd1 :    begin HEX6_o = D1; end 
-				default : begin HEX6_o = D0; end
+		      1'd0 :    begin HEX5_o = D0; end
+				1'd1 :    begin HEX5_o = D1; end 
+				default : begin HEX5_o = D0; end
 		  endcase
 	 end
 	 always_comb begin
@@ -160,6 +162,7 @@ module SevenHexDecoder(
 				default : begin HEX4_o = D0; end
 		  endcase
 	 end
+	 /*
 	 always_comb begin
 	     case(stable_cnt_i[9:7]) // 512 + 256 + 128
 		      3'b000 :  begin HEX2_o = D0; end
@@ -182,7 +185,6 @@ module SevenHexDecoder(
 				default : begin HEX3_o = D0; end
 		  endcase
 	 end
-	 
 	 always_comb begin
 	     if(stable_cnt_i > 12'd0) begin 
 		      HEX1_o = D1; 
@@ -191,14 +193,27 @@ module SevenHexDecoder(
 		      HEX1_o = D0; 
 		  end 
 	 end
-	 
+	 */
     
-    assign HEX0_o = HEX0;
+    //assign HEX0_o = D0;
     //assign HEX1_o = HEX1;
     //assign HEX2_o = HEX2;
     //assign HEX3_o = HEX3;
     //assign HEX4_o = HEX4;
     //assign HEX5_o = DARK;
+	 //assign HEX4_o = distance_i[16];
+	 
+	 assign HEX3_o = distance_i[16] ? D1 : D0;
+	 assign HEX2_o = distance_i[15] ? D1 : D0;
+	 assign HEX1_o = distance_i[14] ? D1 : D0;
+	 //assign HEX0_o = distance_i[13] ? D1 : D0;
+	 /*
+	 assign HEX3_o = location_i[16] ? D1 : D0;
+	 assign HEX2_o = location_i[15] ? D1 : D0;
+	 assign HEX1_o = location_i[14] ? D1 : D0;
+	 */
+	 //assign HEX0_o = location_i[13] ? D1 : D0;
+	 assign HEX0_o = smallornot_i ? D1 : D0;
 
     always_comb begin
         if(state == PAUSE) begin // PAUSE

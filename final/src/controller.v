@@ -11,8 +11,8 @@ module controller#(
 
     // I/O with supersonic
     input            valid,
-	input            fail,   // not receive valid -> re-trigger
-    input [DisLen:0] distance,
+	 input            fail,   // not receive valid -> re-trigger
+    input unsigned [DisLen:0] distance,
     input            triggerSuc,
     output           trigger,    // hold high for at least 10 us (500 cycles)
 
@@ -26,21 +26,23 @@ module controller#(
 
     output       finish,
 	 
-	//for testing !!!!!!!!!!
-	output	[3:0]state_o,
-	output  [11:0]stable_cnt_o
+	 //for testing !!!!!!!!!!
+	 output	[3:0]  state_o,
+	 output  [11:0] stable_cnt_o,
+	 output  [DisLen:0] location_o,
+	 output  smallornot_o
 );
 
 //==== Parameter declaration ============================
-    parameter IDLE     = 4'd0;
-    parameter INIT_TRI = 4'd1;
-    parameter INIT_MEA = 4'd2;
-    parameter TRIGGER  = 4'd3;
-    parameter MEASURE  = 4'd4;
-    parameter CUT      = 4'd5;
-    parameter PAUSE    = 4'd6;
-    parameter BACK_TRI = 4'd7;
-    parameter BACK     = 4'd8;
+    localparam IDLE     = 4'd0;
+    localparam INIT_TRI = 4'd1;
+    localparam INIT_MEA = 4'd2;
+    localparam TRIGGER  = 4'd3;
+    localparam MEASURE  = 4'd4;
+    localparam CUT      = 4'd5;
+    localparam PAUSE    = 4'd6;
+    localparam BACK_TRI = 4'd7;
+    localparam BACK     = 4'd8;
 
 //==== wire/reg declaration =============================
     // Output registers
@@ -62,26 +64,28 @@ module controller#(
     reg  [3:0] stateTem_nxt;
 
     // DISTANCE-RELATED
-    reg [DisLen:0] length_cur;
-    reg [DisLen:0] length_nxt;
-    reg [DisLen:0] segment_cur;
-    reg [DisLen:0] segment_nxt;
-    reg [DisLen:0] location_cur;  // location of start point
-    reg [DisLen:0] location_nxt;
+    reg unsigned [DisLen:0] length_cur;
+    reg unsigned [DisLen:0] length_nxt;
+    reg unsigned [DisLen:0] segment_cur;
+    reg unsigned [DisLen:0] segment_nxt;
+    reg unsigned [DisLen:0] location_cur;  // location of start point
+    reg unsigned [DisLen:0] location_nxt;
 
     // CUT-counter
     reg  [4:0] counter;
     reg  [4:0] counter_nxt;
 	
-	// Stable-counter : keep at least 50ms spacing -> 2500 cycles
-	reg [11:0] stable_counter;
-    reg	[11:0] stable_counter_nxt;
+	 // Stable-counter : keep at least 50ms spacing -> 2500 cycles
+	 reg [11:0] stable_counter;
+    reg [11:0] stable_counter_nxt;
 
 //==== combinational circuit ============================
 
     // for testing!!!!!!!!!!!!!!!!!1
-	assign state_o = state_cur;
-	assign stable_cnt_o = stable_counter;
+	 assign state_o = state_cur;
+	 assign stable_cnt_o = stable_counter;
+	 assign location_o = location_cur;
+	 assign smallornot_o = (distance < (location_cur - segment_cur));
 
 
     assign trigger = trigger_cur;
@@ -90,155 +94,6 @@ module controller#(
     assign finish = finish_cur;
     assign back = back_cur;
 
-    // trigger signal
-    always @ ( * ) begin
-        trigger_nxt = 1'b0;
-        case(state_cur)
-            INIT_TRI: begin
-				if (pause) begin
-					trigger_nxt = 1'b0;
-				end
-				else begin
-					if (~triggerSuc) begin
-						if(stable_counter >= 12'd2500) begin
-					    	trigger_nxt = 1'b1;
-					    end
-						else begin
-							trigger_nxt = 1'b0;
-						end
-					end
-					else begin
-						trigger_nxt = 1'b0;
-					end
-				end
-            end
-            TRIGGER: begin
-                if (pause) begin
-					trigger_nxt = 1'b0;
-				end
-				else begin
-					if (~triggerSuc) begin
-						if(stable_counter >= 12'd2500) begin
-							trigger_nxt = 1'b1;
-						end
-						else begin
-							trigger_nxt = 1'b0;
-						end
-					end
-					else begin
-						trigger_nxt = 1'b0;
-					end
-				end
-            end
-            BACK_TRI: begin
-                if (pause) begin
-					trigger_nxt = 1'b0;
-				end
-				else begin
-					if (~triggerSuc) begin
-						if(stable_counter >= 12'd2500) begin
-							trigger_nxt = 1'b1;
-						end
-						else begin
-							trigger_nxt = 1'b0;
-						end
-					end
-					else begin
-						trigger_nxt = 1'b0;
-					end
-				end
-            end
-        endcase
-    end
-
-    // segment_nxt
-    always @ ( * ) begin
-		if (pause) begin
-		    segment_nxt = segment_cur;
-		end
-        else if(state_cur == INIT_MEA && valid) begin
-            if (slice_num[4] == 1'b1)begin
-                segment_nxt = {4'b0000,distance[DisLen:4]};
-                end
-            else if (slice_num[3] == 1'b1)begin
-                segment_nxt = {3'b000,distance[DisLen:3]};
-            end
-            else if (slice_num[2] == 1'b1)begin
-                segment_nxt = {2'b00,distance[DisLen:2]};
-            end
-            else if (slice_num[1] == 1'b1)begin
-                segment_nxt = {1'b0,distance[DisLen:1]};
-            end
-			else begin
-				segment_nxt = segment_cur;
-			end
-        end
-        else begin
-            segment_nxt = segment_cur;
-        end
-    end
-
-	// stable_counter
-	always @ ( * ) begin
-	    stable_counter_nxt = 12'd0;
-        case(state_cur)
-            INIT_TRI: begin
-                if (pause) begin
-					     stable_counter_nxt = 12'd0;
-				    end
-				    else begin
-					     if (~triggerSuc) begin
-						      if(stable_counter < 12'd2500) begin
-							       stable_counter_nxt = stable_counter + 12'd1;
-						      end
-						      else begin
-                            stable_counter_nxt = 12'd2500;
-						      end
-					     end
-					     else begin
-						      stable_counter_nxt = 12'd0;
-					     end
-				    end
-            end
-            TRIGGER: begin
-                if (pause) begin
-					stable_counter_nxt = 12'd0;
-				end
-				else begin
-					if (~triggerSuc) begin
-						if(stable_counter < 12'd2500) begin
-							stable_counter_nxt = stable_counter + 12'd1;
-						end
-						else begin
-							stable_counter_nxt = 12'd2500;
-						end
-					end
-					else begin
-						stable_counter_nxt = 12'd0;
-					end
-				end
-            end
-            BACK_TRI: begin
-               if (pause) begin
-					stable_counter_nxt = 12'd0;
-				end
-				else begin
-					if (~triggerSuc) begin
-						if(stable_counter < 12'd2500) begin
-							stable_counter_nxt = stable_counter + 12'd1;
-						end
-						else begin
-							stable_counter_nxt = 12'd2500;
-						end
-					end
-					else begin
-						stable_counter_nxt = 12'd0;
-					end
-				end
-            end
-        endcase
-	end
-	
     // FSM
     always @ ( * ) begin
         state_nxt    = state_cur;
@@ -290,11 +145,11 @@ module controller#(
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-					if (fail) begin
-						state_nxt = INIT_TRI;
+					     if (fail) begin
+						      state_nxt = INIT_TRI;
                         length_nxt = length_cur;
                         location_nxt = location_cur;
-					end
+					     end
                     else if(valid) begin
                         state_nxt = TRIGGER;
                         length_nxt = distance;
@@ -337,15 +192,15 @@ module controller#(
                 end
                 else begin
                     stateTem_nxt = stateTem_cur;
-					if (fail) begin
-						move_nxt = 1'b0;
+					     if (fail) begin
+						      move_nxt = 1'b0;
                         cut_nxt = 1'b0;
                         state_nxt = TRIGGER;
                         counter_nxt = counter;
-					end
+					     end
                     else if(valid) begin
-						move_nxt = 1'b0;
-                        if( distance <= location_cur - segment_cur)begin
+						      move_nxt = 1'b0;
+                        if( distance < (location_cur - segment_cur))begin
                             // GO TO CUT
                             cut_nxt = 1'b1;
                             state_nxt = CUT;
@@ -462,6 +317,158 @@ module controller#(
             end
         endcase
     end
+	 
+	 
+	 // trigger signal
+    always @ ( * ) begin
+        trigger_nxt = 1'b0;
+        case(state_cur)
+            INIT_TRI: begin
+				if (pause) begin
+					trigger_nxt = 1'b0;
+				end
+				else begin
+					if (~triggerSuc) begin
+						if(stable_counter >= 12'd2500) begin
+					    	trigger_nxt = 1'b1;
+					    end
+						else begin
+							trigger_nxt = 1'b0;
+						end
+					end
+					else begin
+						trigger_nxt = 1'b0;
+					end
+				end
+            end
+            TRIGGER: begin
+                if (pause) begin
+					trigger_nxt = 1'b0;
+				end
+				else begin
+					if (~triggerSuc) begin
+						if(stable_counter >= 12'd2500) begin
+							trigger_nxt = 1'b1;
+						end
+						else begin
+							trigger_nxt = 1'b0;
+						end
+					end
+					else begin
+						trigger_nxt = 1'b0;
+					end
+				end
+            end
+            BACK_TRI: begin
+                if (pause) begin
+					trigger_nxt = 1'b0;
+				end
+				else begin
+					if (~triggerSuc) begin
+						if(stable_counter >= 12'd2500) begin
+							trigger_nxt = 1'b1;
+						end
+						else begin
+							trigger_nxt = 1'b0;
+						end
+					end
+					else begin
+						trigger_nxt = 1'b0;
+					end
+				end
+            end
+				default: trigger_nxt = 1'b0;
+        endcase
+    end
+
+    // segment_nxt
+    always @ ( * ) begin
+		if (pause) begin
+		    segment_nxt = segment_cur;
+		end
+        else if(state_cur == INIT_MEA && valid) begin
+            if (slice_num[4] == 1'b1)begin
+                segment_nxt = {4'b0000,distance[DisLen:4]};
+                end
+            else if (slice_num[3] == 1'b1)begin
+                segment_nxt = {3'b000,distance[DisLen:3]};
+            end
+            else if (slice_num[2] == 1'b1)begin
+                segment_nxt = {2'b00,distance[DisLen:2]};
+            end
+            else if (slice_num[1] == 1'b1)begin
+                segment_nxt = {1'b0,distance[DisLen:1]};
+            end
+			else begin
+				segment_nxt = segment_cur;
+			end
+        end
+        else begin
+            segment_nxt = segment_cur;
+        end
+    end
+
+	// stable_counter
+	always @ ( * ) begin
+	    stable_counter_nxt = 12'd0;
+        case(state_cur)
+            INIT_TRI: begin
+                if (pause) begin
+					     stable_counter_nxt = 12'd0;
+				    end
+				    else begin
+					     if (~triggerSuc) begin
+						      if(stable_counter < 12'd2500) begin
+							       stable_counter_nxt = stable_counter + 12'd1;
+						      end
+						      else begin
+                            stable_counter_nxt = 12'd2500;
+						      end
+					     end
+					     else begin
+						      stable_counter_nxt = 12'd0;
+					     end
+				    end
+            end
+            TRIGGER: begin
+                if (pause) begin
+					stable_counter_nxt = 12'd0;
+				end
+				else begin
+					if (~triggerSuc) begin
+						if(stable_counter < 12'd2500) begin
+							stable_counter_nxt = stable_counter + 12'd1;
+						end
+						else begin
+							stable_counter_nxt = 12'd2500;
+						end
+					end
+					else begin
+						stable_counter_nxt = 12'd0;
+					end
+				end
+            end
+            BACK_TRI: begin
+               if (pause) begin
+					stable_counter_nxt = 12'd0;
+				end
+				else begin
+					if (~triggerSuc) begin
+						if(stable_counter < 12'd2500) begin
+							stable_counter_nxt = stable_counter + 12'd1;
+						end
+						else begin
+							stable_counter_nxt = 12'd2500;
+						end
+					end
+					else begin
+						stable_counter_nxt = 12'd0;
+					end
+				end
+            end
+				default: stable_counter_nxt = 12'd0;
+        endcase
+	end
 
 //==== synchronous circuit ==============================
     always @(posedge clk or negedge rst_n) begin
@@ -472,13 +479,18 @@ module controller#(
             stateTem_cur   <= 3'd0;
             move_cur       <= 1'b0;
             cut_cur        <= 1'b0;
+				/*
             length_cur     <= {TotLen{1'b0}};
             segment_cur    <= {TotLen{1'b0}};
             location_cur   <= {TotLen{1'b0}};
+				*/
+				length_cur     <= 17'b0;
+            segment_cur    <= 17'b0;
+            location_cur   <= 17'b0;
             counter        <= 5'd0;
             finish_cur     <= 1'b0;
             back_cur       <= 1'b0;
-			stable_counter <= 12'd0;
+			   stable_counter <= 12'd0;
         end
         else begin
             trigger_cur    <= trigger_nxt;

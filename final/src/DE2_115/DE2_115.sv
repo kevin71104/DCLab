@@ -176,6 +176,8 @@ mover_signal[3:0]:GPIO[]
 	 logic        testSuc;
 	 logic [11:0] stable_cnt;
 	 logic        superState;
+	 logic [16:0] location;
+	 logic		  smallornot;
 
 // ============ On Board FPGA =============
  
@@ -223,11 +225,13 @@ mover_signal[3:0]:GPIO[]
 		  .state_i (state),
 		  .cut_signal_i(cut_signal),
 		  .move_signal_i(move_signal),
-		  .trigger_i(GPIO[14]),
+		  .echo_i(GPIO[5]),
+		  .trigger_i(GPIO[4]),
 		  .triggerSuc_i(testSuc),
-		  .echo_i(GPIO[15]),
 		  .stable_cnt_i(stable_cnt),
-		  .superState_i(superState)
+		  .superState_i(superState),
+		  .location_i(location),
+		  .smallornot_i(smallornot)
 	);
     
     Top #(
@@ -241,10 +245,11 @@ mover_signal[3:0]:GPIO[]
 	  	 .slice_i        (slice),
 		 .slice_num_o    (slice_num),
 		 .finish_o       (finish),
-		 .echo_i         (GPIO[15]), // FPGA 18
-		 .trigger_o      (GPIO[14]), // FPGA 17
+		 .echo_i         (GPIO[5]), 
+		 .trigger_o      (GPIO[4]), 
 		 .move_signal_o  (move_signal),
-	     //.cut_signal_o   ({GPIO[0],GPIO[1],GPIO[2],GPIO[3]}),    
+	    .cut_signal_o   (cut_signal),
+		  
         // for testing 
        .distance_o     (distance),
 		 .move_o(move),
@@ -252,9 +257,12 @@ mover_signal[3:0]:GPIO[]
 		 .state_o(state),
 		 .triggerSuc_o(testSuc),
 		 .stable_cnt_o(stable_cnt),
-		 .superState_o(superState)
+		 .superState_o(superState),
+		 .location_o(location),
+		 .smallornot_o(smallornot)
 	);
 	
+	 assign {GPIO[0],GPIO[1],GPIO[2],GPIO[3]} = cut_signal;
 	 assign {GPIO[35],GPIO[34],GPIO[33],GPIO[32]} = move_signal;
     assign GPIO[31:30] = 2'b11;
 endmodule
